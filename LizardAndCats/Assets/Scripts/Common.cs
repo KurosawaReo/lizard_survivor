@@ -5,6 +5,13 @@ using UnityEngine.SceneManagement;
 
 namespace Const
 {
+    public enum Board
+    {
+        NONE,     //Ç»Çµ.
+        CAT,      //îL.
+        LIZARD,   //ÉgÉJÉQ.
+    };
+
     public class Common
     {
         // íËêî
@@ -16,6 +23,18 @@ namespace Const
         public static void LoadScene(string _sceneName)
         {
             SceneManager.LoadScene(_sceneName);
+        }
+
+        /// <summary>
+        /// âÊñ ÇÃç∂â∫Ç∆âEè„ÇÃê¢äEç¿ïWÇï‘Ç∑
+        /// </summary>
+        /// <returns></returns>
+        public static (Vector3 leftBottom, Vector3 rightTop) GetWorldWindowSize()
+        {
+            Vector3 leftBottom = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+            return (leftBottom, rightTop);
         }
     }
 }
