@@ -10,6 +10,7 @@ public class BoardObject
     int id;
     int hp;
 
+    //初期化処理(コンストラクタ)
     public BoardObject(BoardType _type, int _id, int _hp)
     {
         type = _type;

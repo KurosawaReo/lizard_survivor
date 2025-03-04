@@ -4,7 +4,6 @@ using UnityEngine;
 
 using Const; //ヘッダのような使い方.
 
-
 public class MapGenerator : MonoBehaviour
 {
     //盤面データ.

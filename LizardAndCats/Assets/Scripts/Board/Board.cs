@@ -4,12 +4,17 @@ using UnityEngine;
 
 using Const;
 
+/// <summary>
+/// 型として使うためのクラス.
+/// </summary>
 public class Board
 {
-    BoardTerrain terrain; //地形情報.
-    BoardObject boardObj = new BoardObject(BoardType.NONE, 0, 0);     //落ちてる物情報.
+    //地形情報.
+    BoardTerrain terrain;
+    //落ちてる物情報.
+    BoardObject boardObj = new BoardObject(BoardType.NONE, 0, 0);
 
-    //初期化処理.
+    //初期化処理(コンストラクタ)
     public Board(BoardTerrain _terra)
     {
         terrain = _terra;
