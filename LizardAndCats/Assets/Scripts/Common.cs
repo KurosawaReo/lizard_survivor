@@ -5,17 +5,39 @@ using UnityEngine.SceneManagement;
 
 namespace Const
 {
-    public enum Board
+    //public enum Board
+    //{
+    //    NONE,     //なし.
+    //    CAT,      //猫.
+    //    LIZARD,   //トカゲ.
+    //};
+
+    /*
+    ボード情報
+    ・床、壁の列挙
+    ・なし、巣、食べ物、素材の列挙
+    */
+    public enum BoardTerrain
     {
-        NONE,     //なし.
-        CAT,      //猫.
-        LIZARD,   //トカゲ.
+        WALL,   //壁.
+        GROUND  //床.
     };
+    public enum BoardType
+    {
+        NONE,
+        NEST,
+        FOOD,
+        MATERIAL
+    };
+
 
     public class Common
     {
         // 定数
         public const string SCENE_NAME_TITLE = "Title";
+
+        public const int BOARD_HEI = 6;
+        public const int BOARD_WID = 6;
 
 
 
