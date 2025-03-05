@@ -6,8 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//ヘッダのような使い方.
 using Const;
-using UnityEngine.SceneManagement; //ヘッダのような使い方.
 
 /// <summary>
 /// 盤面生成のプログラム.
@@ -113,7 +113,7 @@ public class BoardManager : MonoBehaviour
             for (int j = 0; j < board.GetLength(1); j++)
             {
                 //boardの落ちてる物別.
-                switch (board[i, j].GetObject().type)
+                switch (board[i, j].GetDropObj().type)
                 {
                     case DropObj.NONE: //無し.
                         break;
@@ -138,7 +138,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    //位置設定.
+    //board座標を元に位置設定.
     private void BoardPosSet(GameObject _obj, int _x, int _y)
     {
         //ウィンドウの端の座標取得.
