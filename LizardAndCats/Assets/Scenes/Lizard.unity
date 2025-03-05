@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 103751428}
   m_Layer: 0
-  m_Name: BoardObjects
+  m_Name: Squares
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -360,8 +360,40 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1386573002}
+  - {fileID: 1239307752}
   - {fileID: 103751428}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1239307751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1239307752}
+  m_Layer: 0
+  m_Name: Nests
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1239307752
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239307751}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 896819139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1386573001
 GameObject:
@@ -430,6 +462,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 985de1f8355498d4ea4d04e05721a5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prfbNest: {fileID: 548364827802148581, guid: 5c01e45e4a750a743981d1038af3c46e, type: 3}
+  prfbNestIn: {fileID: 1239307751}
+  objBrdMng: {fileID: 1469511291}
 --- !u!1 &1469511291
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,7 +495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prfbSquare: {fileID: 548364827802148581, guid: da7fdd0e6252b8b4f800c31f94d27fc1, type: 3}
-  objBoardObjs: {fileID: 103751427}
+  prfbSquareIn: {fileID: 103751427}
 --- !u!4 &1469511293
 Transform:
   m_ObjectHideFlags: 0

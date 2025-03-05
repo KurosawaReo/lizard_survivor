@@ -1,6 +1,6 @@
 /*
    - BoardGenerator.cs -
-   製作:黒澤
+   黒澤ver.
 */
 using System.Collections;
 using System.Collections.Generic;
@@ -16,10 +16,8 @@ using UnityEngine.SceneManagement; //ヘッダのような使い方.
 public class BoardManager : MonoBehaviour
 {
     [Header("- prefab -")]
-    [SerializeField] GameObject prfbSquare; //四角形prefab.
-
-    [Header("- object -")]
-    [SerializeField] GameObject objBoardObjs; //生成するobjを入れる場所.
+    [SerializeField] GameObject prfbSquare;   //四角形prefab.
+    [SerializeField] GameObject prfbSquareIn; //prefabを入れる場所.
 
     //  [SerializeField] Sprite lizardImg;
     //  [SerializeField] Sprite catImg;
@@ -27,34 +25,25 @@ public class BoardManager : MonoBehaviour
     //盤面データ.
     Board[,] board = new Board[Common.BOARD_HEI, Common.BOARD_WID] //Board[y, x]
     {
+        { new Board(BoardTerrain.WALL)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL)   },
+        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL)   },
+        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
+        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL),   new Board(BoardTerrain.GROUND) },
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
+        { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL),   new Board(BoardTerrain.WALL),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
     };
 
     void Start()
     {
-        BoardInit();
         BoardMake();
     }
 
     void Update()
     {
-        DebugReload();  
+
     }
 
-    //デバッグ用シーン読み込み.
-    private void DebugReload()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene("Lizard(kurosawa)");
-        }
-    } 
-
+#if false
     //board配列の初期化.
     private void BoardInit()
     {
@@ -70,6 +59,8 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+#endif
+
     //board配列を元にステージ生成.
     private void BoardMake()
     {
@@ -82,19 +73,15 @@ public class BoardManager : MonoBehaviour
 
                 //座標の計算.
                 float x = lb.x+Common.BOARD_BASE_X + (j+0.5f) * Common.BOARD_GRID_SIZE;
-                float y = rt.y+Common.BOARD_BASE_Y - (i+0.5f) * Common.BOARD_GRID_SIZE;
+                float y = rt.y-Common.BOARD_BASE_Y - (i+0.5f) * Common.BOARD_GRID_SIZE;
                 var pos = new Vector3(x, y, 0);
 
-                //背景マスの生成実行.
-#if false
-                var obj = Instantiate(prfbSquare, pos, Quaternion.identity);
-#else
-                //prefab生成.
-                var obj = Instantiate(prfbSquare, objBoardObjs.transform);
+                //背景用prefabの生成.
+                var obj = Instantiate(prfbSquare, prfbSquareIn.transform);
                 //位置設定.
                 obj.transform.position = pos;
                 obj.transform.localScale = new Vector3(Common.BOARD_GRID_SIZE, Common.BOARD_GRID_SIZE, 0);
-#endif
+
                 //マスデータ別.
                 switch (board[i, j].GetTerrain())
                 {
@@ -112,12 +99,12 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void SetBoard(int _x, int _y, Board _board)
+    public void SetBoard(Vector2Int _pos, Board _board)
     {
-        board[_y, _x] = _board;
+        board[_pos.y, _pos.x] = _board;
     }
-    public Board GetBoard(int _x, int _y)
+    public Board GetBoard(Vector2Int _pos)
     {
-        return board[_y, _x];
+        return board[_pos.y, _pos.x];
     }
 }
