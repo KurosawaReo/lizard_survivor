@@ -6,7 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Const; //ヘッダのような使い方.
+using Const;
+using UnityEngine.SceneManagement; //ヘッダのような使い方.
 
 /// <summary>
 /// 盤面生成のプログラム.
@@ -24,7 +25,7 @@ public class BoardManager : MonoBehaviour
     //  [SerializeField] Sprite catImg;
 
     //盤面データ.
-    Board[,] board = new Board[Common.BOARD_HEI, Common.BOARD_WID] //[y, x]
+    Board[,] board = new Board[Common.BOARD_HEI, Common.BOARD_WID] //Board[y, x]
     {
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
@@ -39,6 +40,20 @@ public class BoardManager : MonoBehaviour
         BoardInit();
         BoardMake();
     }
+
+    void Update()
+    {
+        DebugReload();  
+    }
+
+    //デバッグ用シーン読み込み.
+    private void DebugReload()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene("Lizard(kurosawa)");
+        }
+    } 
 
     //board配列の初期化.
     private void BoardInit()
@@ -65,16 +80,20 @@ public class BoardManager : MonoBehaviour
         for (int i = 0; i < board.GetLength(0); i++){
             for (int j = 0; j < board.GetLength(1); j++){
 
-                //背景の生成.
-                var pos = new Vector3(lb.x + j + 0.5f, rt.y - i - 0.5f, 0);
+                //座標の計算.
+                float x = lb.x+Common.BOARD_BASE_X + (j+0.5f) * Common.BOARD_GRID_SIZE;
+                float y = rt.y+Common.BOARD_BASE_Y - (i+0.5f) * Common.BOARD_GRID_SIZE;
+                var pos = new Vector3(x, y, 0);
 
-#if false //TODO:どうするか?
+                //背景マスの生成実行.
+#if false
                 var obj = Instantiate(prfbSquare, pos, Quaternion.identity);
 #else
                 //prefab生成.
                 var obj = Instantiate(prfbSquare, objBoardObjs.transform);
                 //位置設定.
                 obj.transform.position = pos;
+                obj.transform.localScale = new Vector3(Common.BOARD_GRID_SIZE, Common.BOARD_GRID_SIZE, 0);
 #endif
                 //マスデータ別.
                 switch (board[i, j].GetTerrain())
@@ -91,5 +110,14 @@ public class BoardManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetBoard(int _x, int _y, Board _board)
+    {
+        board[_y, _x] = _board;
+    }
+    public Board GetBoard(int _x, int _y)
+    {
+        return board[_y, _x];
     }
 }

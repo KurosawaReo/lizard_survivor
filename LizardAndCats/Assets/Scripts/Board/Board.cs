@@ -9,7 +9,7 @@ using UnityEngine;
 using Const;
 
 /// <summary>
-/// boardに使う型の定義と、配列データのある場所.
+/// boardクラス(boardの情報をまとめた所)
 /// </summary>
 public class Board
 {
@@ -24,7 +24,7 @@ public class Board
         terrain = _terra;
     }
 
-    //set関数.
+    //set.
     public void SetTerrain(BoardTerrain _terrain)
     {
         terrain = _terrain;
@@ -34,7 +34,7 @@ public class Board
         boardObj = new BoardObject(_type, _id, _hp);
     }
 
-    //get関数.
+    //get.
     public BoardTerrain GetTerrain()
     {
         return terrain;
