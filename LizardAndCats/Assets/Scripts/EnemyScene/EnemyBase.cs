@@ -1,14 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Const;
 
 public abstract class EnemyBase : MonoBehaviour
 {
     protected Vector2Int pos;
+    protected GameManager gm;
 
-    public void Move()
+
+    public enum MoveVec
     {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT,
+    }
+
+
+    virtual public void Init()
+    {
+        gm = GameObject.Find("GameManger").GetComponent<GameManager>();
+        pos = new Vector2Int(gm.GetBoard().GetLength(1) - 1, gm.GetBoard().GetLength(0) - 1);
+
+        SetPosition();
+    }
+
+    virtual public void Move(MoveVec _vec)
+    {
+        switch (_vec)
+        {
+            case MoveVec.UP:
+                pos -= Vector2Int.up;
+                break;
+            case MoveVec.DOWN:
+                pos -= Vector2Int.down;
+                break;
+            case MoveVec.RIGHT:
+                pos += Vector2Int.right;
+                break;
+            case MoveVec.LEFT:
+                pos += Vector2Int.left;
+                break;
+        }
+
+        SetPosition();
     }
 
     public void SetPosition()
@@ -20,65 +54,39 @@ public abstract class EnemyBase : MonoBehaviour
     }
 
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        var board = GameObject.Find("EnemyBoardManger").GetComponent<EnemyBoard>().GetBoard();
-        var xlen = board.GetLength(1) - 1;
-        var ylen = board.GetLength(0) - 1;
-        pos.x = xlen;
-        pos.y = ylen;
-
-        //board[ylen - 1, xlen - 1];
-        SetPosition();
-
-
-    }
-
     // Update is called once per frame
     void Update()
     {
-        var board = GameObject.Find("EnemyBoardManger").GetComponent<EnemyBoard>().GetBoard();
-        var xlen = board.GetLength(1) - 1;
-        var ylen = board.GetLength(0) - 1;
+        var xlen = gm.GetBoard().GetLength(1) - 1;
+        var ylen = gm.GetBoard().GetLength(0) - 1;
+
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (pos.y != 0)
             {
                 pos.y = pos.y - 1;
-                SetPosition();
+                
             }
-            Debug.Log("à⁄ìÆÇµÇ‹Ç∑");
-
-
-            //É|ê}ÇÃà íuÇ™îzóÒÇÃÇOî‘ñ⁄ÇÃéûé~Ç‹ÇÈ
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (pos.y != ylen)
             {
-                Debug.Log("à⁄ìÆÇµÇ‹Ç∑");
                 pos.y = pos.y + 1;
-                SetPosition();
             }
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             if (pos.x != 0)
             {
-                Debug.Log("à⁄ìÆÇµÇ‹Ç∑");
                 pos.x = pos.x - 1;
-                SetPosition();
             }
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             if (pos.x != xlen)
             {
-                Debug.Log("à⁄ìÆÇµÇ‹Ç∑");
                 pos.x = pos.x + 1;
-                SetPosition();
             }
         }
     }

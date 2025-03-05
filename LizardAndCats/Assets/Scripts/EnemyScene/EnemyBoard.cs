@@ -1,6 +1,4 @@
 using Const;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyBoard : MonoBehaviour
@@ -18,8 +16,6 @@ public class EnemyBoard : MonoBehaviour
 
     [SerializeField] GameObject squarePrfb; //四角形prefab.
 
-    //    [SerializeField] Sprite lizardImg;
-    //    [SerializeField] Sprite catImg;
 
     void Start()
     {
@@ -43,6 +39,9 @@ public class EnemyBoard : MonoBehaviour
             }
         }
     }
+
+
+
     private void BoardMake()
     {
         //ウィンドウの端の座標取得.
