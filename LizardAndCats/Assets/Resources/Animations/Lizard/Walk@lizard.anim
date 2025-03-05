@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Move@lizard
+  m_Name: Walk@lizard
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,11 +21,11 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: 24e82061569f37d46a0164adbf222a4b, type: 3}
-    - time: 0.125
       value: {fileID: 21300000, guid: aba34a8ba34228b459dccc4775fb0ec6, type: 3}
+    - time: 0.125
+      value: {fileID: 21300000, guid: 24e82061569f37d46a0164adbf222a4b, type: 3}
     attribute: m_Sprite
-    path: Square
+    path: LizardImg
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -37,7 +37,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 3394203039
+      path: 3508766738
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -46,8 +46,8 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 24e82061569f37d46a0164adbf222a4b, type: 3}
     - {fileID: 21300000, guid: aba34a8ba34228b459dccc4775fb0ec6, type: 3}
+    - {fileID: 21300000, guid: 24e82061569f37d46a0164adbf222a4b, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

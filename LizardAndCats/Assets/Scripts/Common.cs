@@ -26,22 +26,34 @@ namespace Const
         MATERIAL, //素材.
         TAIL      //尻尾.
     };
+    //4方向.
+    public enum Direction
+    { 
+        UP,    //上
+        RIGHT, //右.
+        DOWN,  //下.
+        LEFT,  //左.
+    }
+
 
     public class Common
     {
         // 定数
         public const string SCENE_NAME_TITLE = "Title";
 
-        public const int   BOARD_WID = 6;            //board配列の横.
-        public const int   BOARD_HEI = 6;            //board配列の縦.
-        public const float BOARD_BASE_X = 2f;        //board左上の座標x.
-        public const float BOARD_BASE_Y = 1f;        //board左上の座標y.
-        public const float BOARD_GRID_SIZE = 1.2f;   //マスを描画するサイズ.
+        public const int   BOARD_WID = 6;             //board配列の横.
+        public const int   BOARD_HEI = 6;             //board配列の縦.
+        public const float BOARD_BASE_X = 2f;         //board左上の座標x.
+        public const float BOARD_BASE_Y = 1f;         //board左上の座標y.
+        public const float BOARD_GRID_SIZE = 1.2f;    //マスを描画するサイズ.
 
-        public const int   LIZARD_LIFE_MAX = 1;      //トカゲの最大体力.
-        public const int   LIZARD_HEALGAGE_MAX = 10; //トカゲの回復ゲージ最大.
+        public const int   LIZARD_HP_MAX = 1;         //トカゲの最大体力.
+        public const int   LIZARD_HEALGAGE_MAX = 10;  //トカゲの回復ゲージ最大.
 
-        public const int   INVENTORY_CNT = 4;        //インベントリ個数.
+        public const float LIZARD_MOVE_ANIM_VEL = 5f;   //トカゲの移動アニメの速度.
+        public const float LIZARD_MOVE_ANIM_SEC = 0.2f; //トカゲの移動アニメの秒数.
+
+        public const int   INVENTORY_CNT = 4;         //インベントリ個数.
 
         // 汎用関数
         public static void LoadScene(string _sceneName)
