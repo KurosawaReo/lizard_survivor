@@ -1,3 +1,7 @@
+/*
+   - Board.cs -
+   製作:黒澤
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +9,7 @@ using UnityEngine;
 using Const;
 
 /// <summary>
-/// 型として使うためのクラス.
+/// boardに使う型の定義と、配列データのある場所.
 /// </summary>
 public class Board
 {

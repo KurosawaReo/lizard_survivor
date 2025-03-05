@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &103751427
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 103751428}
+  m_Layer: 0
+  m_Name: BoardObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &103751428
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 103751427}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 896819139}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &273270572
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,6 +330,39 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &896819138
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 896819139}
+  m_Layer: 0
+  m_Name: GameObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &896819139
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896819138}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.8626044, y: -0.79275525, z: -0.06942771}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1386573002}
+  - {fileID: 103751428}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1386573001
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,13 +388,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1386573001}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.57700044, y: 1.1540661, z: 0.021091286}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.4396048, y: 1.9468213, z: 0.090518996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 882965981}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 896819139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1386573003
 Animator:
@@ -364,7 +428,7 @@ GameObject:
   - component: {fileID: 1469511293}
   - component: {fileID: 1469511292}
   m_Layer: 0
-  m_Name: BoardGenerator
+  m_Name: BoardManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -382,7 +446,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 017d85a3979659441a723affd86d9fd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squarePrfb: {fileID: 548364827802148581, guid: da7fdd0e6252b8b4f800c31f94d27fc1, type: 3}
+  prfbSquare: {fileID: 548364827802148581, guid: da7fdd0e6252b8b4f800c31f94d27fc1, type: 3}
+  objBoardObjs: {fileID: 103751427}
 --- !u!4 &1469511293
 Transform:
   m_ObjectHideFlags: 0
@@ -649,6 +714,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 273270575}
   - {fileID: 1662874565}
-  - {fileID: 1386573002}
+  - {fileID: 896819139}
   - {fileID: 1469511293}
   - {fileID: 1991155709}

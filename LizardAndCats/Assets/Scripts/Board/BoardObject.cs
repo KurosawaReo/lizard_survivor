@@ -1,9 +1,16 @@
+/*
+   - BoardObject.cs -
+   »ì:•àV
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using Const;
 
+/// <summary>
+/// ”z—ñ‚ÅA—‚¿‚Ä‚é•¨î•ñ‚ğŠÇ—‚·‚é‚½‚ß‚ÌŒ^.
+/// </summary>
 public class BoardObject
 {
     BoardType type;

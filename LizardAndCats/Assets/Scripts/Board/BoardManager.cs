@@ -1,13 +1,30 @@
+/*
+   - BoardGenerator.cs -
+   製作:黒澤
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using Const; //ヘッダのような使い方.
 
-public class MapGenerator : MonoBehaviour
+/// <summary>
+/// 盤面生成のプログラム.
+/// board配列はここに入ってる.
+/// </summary>
+public class BoardManager : MonoBehaviour
 {
+    [Header("- prefab -")]
+    [SerializeField] GameObject prfbSquare; //四角形prefab.
+
+    [Header("- object -")]
+    [SerializeField] GameObject objBoardObjs; //生成するobjを入れる場所.
+
+    //  [SerializeField] Sprite lizardImg;
+    //  [SerializeField] Sprite catImg;
+
     //盤面データ.
-    Board[,] board = new Board[Common.BOARD_WID, Common.BOARD_HEI]
+    Board[,] board = new Board[Common.BOARD_HEI, Common.BOARD_WID] //[y, x]
     {
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
@@ -17,31 +34,28 @@ public class MapGenerator : MonoBehaviour
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
     };
 
-    [SerializeField] GameObject squarePrfb; //四角形prefab.
-
-//    [SerializeField] Sprite lizardImg;
-//    [SerializeField] Sprite catImg;
-
     void Start()
     {
         BoardInit();
         BoardMake();
     }
 
+    //board配列の初期化.
     private void BoardInit()
     {
         //盤面ループ.
-        for (int i = 0; i < board.GetLength(0); i++){
-            for (int j = 0; j < board.GetLength(1); j++){
+        for (int i = 0; i < Common.BOARD_HEI; i++){
+            for (int j = 0; j < Common.BOARD_WID; j++){
 
                 //周りのマス.
-                if (i == 0 || j == 0 || i == board.GetLength(0)-1 || j == board.GetLength(1)-1)
+                if (i == 0 || j == 0 || i == Common.BOARD_HEI - 1 || j == Common.BOARD_WID - 1)
                 {
-                    board[i, j].SetTerrain(BoardTerrain.WALL);
+                    board[j, i].SetTerrain(BoardTerrain.WALL);
                 }
             }
         }
     }
+    //board配列を元にステージ生成.
     private void BoardMake()
     {
         //ウィンドウの端の座標取得.
@@ -53,8 +67,15 @@ public class MapGenerator : MonoBehaviour
 
                 //背景の生成.
                 var pos = new Vector3(lb.x + j + 0.5f, rt.y - i - 0.5f, 0);
-                var obj = Instantiate(squarePrfb, pos, Quaternion.identity);
 
+#if false //TODO:どうするか?
+                var obj = Instantiate(prfbSquare, pos, Quaternion.identity);
+#else
+                //prefab生成.
+                var obj = Instantiate(prfbSquare, objBoardObjs.transform);
+                //位置設定.
+                obj.transform.position = pos;
+#endif
                 //マスデータ別.
                 switch (board[i, j].GetTerrain())
                 {
@@ -70,10 +91,5 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-    }
-
-    void Update()
-    {
-        
     }
 }

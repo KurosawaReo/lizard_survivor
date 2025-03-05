@@ -5,41 +5,34 @@ using UnityEngine.SceneManagement;
 
 namespace Const
 {
-    //public enum Board
-    //{
-    //    NONE,     //なし.
-    //    CAT,      //猫.
-    //    LIZARD,   //トカゲ.
-    //};
-
     /*
-    ボード情報
-    ・床、壁の列挙
-    ・なし、巣、食べ物、素材の列挙
+       [ボード情報]
+       ・床、壁の列挙
+       ・なし、巣、食べ物、素材の列挙
     */
+
+    //地形情報.
     public enum BoardTerrain
     {
-        WALL,   //壁.
-        GROUND  //床.
+        WALL,    //壁.
+        GROUND   //床.
     };
+    //落ちてる物情報.
     public enum BoardType
     {
-        NONE,
-        NEST,
-        FOOD,
-        MATERIAL
+        NONE,    //なし.
+        NEST,    //巣.
+        FOOD,    //食べ物.
+        MATERIAL //素材.
     };
-
 
     public class Common
     {
         // 定数
         public const string SCENE_NAME_TITLE = "Title";
 
-        public const int BOARD_HEI = 6;
         public const int BOARD_WID = 6;
-
-
+        public const int BOARD_HEI = 6;
 
         // 汎用関数
         public static void LoadScene(string _sceneName)
