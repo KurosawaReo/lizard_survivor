@@ -113,7 +113,7 @@ public class LizardManager : MonoBehaviour
         {
             //ˆÚ“®æ‚Ìƒ}ƒX‚Ì•¨Žæ“¾.
             var brdTer = scptBrdMng.GetBoard(tmpPos).GetTerrain();
-            var brdObj = scptBrdMng.GetBoard(tmpPos).GetObject();
+            var brdObj = scptBrdMng.GetBoard(tmpPos).GetDropObj();
 
             //áŠQ•¨‚ª‚È‚¯‚ê‚Î.
             if (
@@ -160,7 +160,7 @@ public class LizardManager : MonoBehaviour
         var board = scptBrdMng.GetBoard(lizard.pos); //[Žæ“¾]Œ»Ýƒ}ƒX‚Ìî•ñ.
 
         //K”ö‰ñ•œƒQ[ƒW‘‰Á.
-        lizard.tailGage += board.GetObject().heal;
+        lizard.tailGage += board.GetDropObj().heal;
         //ƒQ[ƒW‚ªÅ‘å‚É‚È‚Á‚½‚ç
         if(lizard.tailGage >= Common.LIZARD_HEALGAGE_MAX)
         {
