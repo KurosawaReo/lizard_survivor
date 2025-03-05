@@ -86,21 +86,34 @@ public class LizardAnim
 public class LizardOpe
 {
     //移動操作.
-    public bool isMoved
+    public float moveBuf
     {
         get; set;
     }
     //巣を作る操作.
-    public bool isMadeNest
+    public float nestBuf
+    {
+        get; set;
+    }
+
+    //仮保存:座標.
+    public Vector2Int tmpPos
+    { 
+        get; set;
+    }
+    //仮保存:方向.
+    public Direction tmpDir
     {
         get; set;
     }
 
     //初期化処理(コンストラクタ)
-    public LizardOpe(bool _isMoved, bool _isMadeNest)
+    public LizardOpe(float _moveBuf, float _nestBuf, Vector2Int _tmpPos, Direction _tmpDir)
     {
-        isMoved    = _isMoved;
-        isMadeNest = _isMadeNest;
+        moveBuf = _moveBuf;
+        nestBuf = _nestBuf;
+        tmpPos  = _tmpPos;
+        tmpDir  = _tmpDir;
     }
 }
 
@@ -134,7 +147,12 @@ public class LizardManager : MonoBehaviour
     //トカゲのアニメ情報.
     LizardAnim anim = new LizardAnim(0, false);
     //トカゲの操作情報.
-    LizardOpe  ope  = new LizardOpe(false, false);
+    LizardOpe  ope  = new LizardOpe(
+        0,                    //moveBuf. 
+        0,                    //nestBuf.
+        new Vector2Int(0, 0), //tmpPos.
+        Direction.UP          //tmpDir.
+    );
 
     void Start()
     {
@@ -147,32 +165,27 @@ public class LizardManager : MonoBehaviour
 
     void Update()
     {
-        if(anim.timer > 0 && !anim.isMidPass)
-        {
-            //操作を行わない.
-        }
-        else
-        {
-            CommandMove(); //移動操作.
-            CommandNest(); //巣を作る操作.
-        }
+        CommandMove(); //移動操作.
+        CommandNest(); //巣を作る操作.
+
+        //バッファタイマー.
+        ope.moveBuf = (ope.moveBuf <= 0) ? 0 : ope.moveBuf - Time.deltaTime;
+        ope.nestBuf = (ope.nestBuf <= 0) ? 0 : ope.nestBuf - Time.deltaTime;
         
         //操作可能になったら.
         if (lizard.isOpeAble)
         {
-            //操作があれば.
-            if (ope.isMoved)
+            //操作猶予が残ってるなら.
+            if (ope.moveBuf > 0)
             {
-                MoveAnimStart(); //アニメーション開始.
+                OpeMoveExe();
+                ope.moveBuf = 0; //リセット.
             }
-            if (ope.isMadeNest)
+            if (ope.nestBuf > 0)
             {
-                MakeNestExe();   //巣作成.
+                OpeNestExe();
+                ope.nestBuf = 0; //リセット.
             }
-
-            //リセット.
-            ope.isMoved = false;
-            ope.isMadeNest = false;
         }
         else
         {
@@ -180,41 +193,55 @@ public class LizardManager : MonoBehaviour
         }
     }
 
+    //移動操作実行.
+    private void OpeMoveExe()
+    {
+        //データ更新.
+        lizard.pos = ope.tmpPos;
+        lizard.dir = ope.tmpDir;
+        //アニメーション開始.
+        MoveAnimStart();
+    }
+    //巣を作る操作実行.
+    private void OpeNestExe()
+    {
+        var board = scptBrdMng.GetBoard(lizard.pos);    //[取得]現在マスの情報.
+        board.SetObject(DropObj.NEST, "none", 1, 0, 0); //[編集]巣にする.
+        scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
+    }
+
     //操作:トカゲ移動.
     private void CommandMove()
     {
-        //仮変更用.
-        Vector2Int tmpPos = lizard.pos;
-        Direction  tmpDir = Direction.UP;
         //操作があったか.
         bool isInput = false;
 
         //上.
         if (Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow))
         {
-            tmpPos -= Vector2Int.up;
-            tmpDir  = Direction.UP;
+            ope.tmpPos = lizard.pos - Vector2Int.up;
+            ope.tmpDir = Direction.UP;
             isInput = true;
         }
         //下.
         if (Input.GetKeyDown(KeyCode.S)||Input.GetKeyDown(KeyCode.DownArrow))
         {
-            tmpPos -= Vector2Int.down;
-            tmpDir  = Direction.DOWN;
+            ope.tmpPos = lizard.pos - Vector2Int.down;
+            ope.tmpDir = Direction.DOWN;
             isInput = true;
         }
         //左.
         if (Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            tmpPos += Vector2Int.left;
-            tmpDir  = Direction.LEFT;
+            ope.tmpPos = lizard.pos + Vector2Int.left;
+            ope.tmpDir = Direction.LEFT;
             isInput = true;
         }
         //右.
         if (Input.GetKeyDown(KeyCode.D)||Input.GetKeyDown(KeyCode.RightArrow))
         {
-            tmpPos += Vector2Int.right;
-            tmpDir  = Direction.RIGHT;
+            ope.tmpPos = lizard.pos + Vector2Int.right;
+            ope.tmpDir = Direction.RIGHT;
             isInput = true;
         }
 
@@ -222,11 +249,11 @@ public class LizardManager : MonoBehaviour
         if (isInput)
         {
             //範囲外に出ていなければ.
-            if (tmpPos.x >= 0 && tmpPos.x < Common.BOARD_WID &&
-                tmpPos.y >= 0 && tmpPos.y < Common.BOARD_HEI)
+            if (ope.tmpPos.x >= 0 && ope.tmpPos.x < Common.BOARD_WID &&
+                ope.tmpPos.y >= 0 && ope.tmpPos.y < Common.BOARD_HEI)
             {
                 //移動先のマスの物取得.
-                var brdTer = scptBrdMng.GetBoard(tmpPos).GetTerrain();
+                var brdTer = scptBrdMng.GetBoard(ope.tmpPos).GetTerrain();
 
                 //障害物がなければ.
                 if (
@@ -234,11 +261,8 @@ public class LizardManager : MonoBehaviour
                     /* TODO:敵たちの座標 */
                 )
                 {
-                    //データだけ更新.
-                    lizard.pos = tmpPos;
-                    lizard.dir = tmpDir;
-
-                    ope.isMoved = true;
+                    //操作の猶予を作る.
+                    ope.moveBuf = Common.OPE_MOVE_BUF_TM;
                 }
             }
         }
@@ -249,7 +273,8 @@ public class LizardManager : MonoBehaviour
         //スペースを押したら.
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ope.isMadeNest = true;
+            //操作の猶予を作る.
+            ope.nestBuf = Common.OPE_NEST_BUF_TM;
         }
     }
 
@@ -300,13 +325,6 @@ public class LizardManager : MonoBehaviour
         float y = rt.y-Common.BOARD_BASE_Y + (-_pos.y-0.5f) * Common.BOARD_GRID_SIZE;
         //移動.
         _obj.transform.position = new Vector2(x, y);
-    }
-    //巣作成実行.
-    private void MakeNestExe()
-    {
-        var board = scptBrdMng.GetBoard(lizard.pos);    //[取得]現在マスの情報.
-        board.SetObject(DropObj.NEST, "none", 1, 0, 0); //[編集]巣にする.
-        scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
     }
 
     //移動アニメ開始.

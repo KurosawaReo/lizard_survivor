@@ -53,6 +53,9 @@ namespace Const
         public const float LIZARD_MOVE_ANIM_VEL = 5f;   //トカゲの移動アニメの速度.
         public const float LIZARD_MOVE_ANIM_SEC = 0.2f; //トカゲの移動アニメの秒数.
 
+        public const float OPE_MOVE_BUF_TM = 0.3f;     //移動操作バッファ.
+        public const float OPE_NEST_BUF_TM = 0.3f;     //巣作り操作バッファ.
+
         public const int   INVENTORY_CNT = 4;         //インベントリ個数.
 
         // 汎用関数
