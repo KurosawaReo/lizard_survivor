@@ -6,11 +6,11 @@ using Const;
 
 public class BoardObject
 {
-    public BoardType type;
+    public DropObj type;
     public int id;
     public int hp;
 
-    public BoardObject(BoardType _type, int _id, int _hp)
+    public BoardObject(DropObj _type, int _id, int _hp)
     {
         type = _type;
         id = _id;

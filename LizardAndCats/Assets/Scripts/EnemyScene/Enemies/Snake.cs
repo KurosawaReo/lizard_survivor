@@ -6,82 +6,106 @@ using UnityEngine;
 public class Snake : EnemyBase
 {
 
-    public override void CheckMove()
+    public override void NightMode()
     {
-        var vec = ERROR_VEC;
-
-        var posList = GetCheckList();
-
-        // 食べ物を検知
-        foreach (var pos in posList)
+        //疲労してたら疲労回復してスキップ
+        if (fatigueCount > 0)
         {
-            if(
-                gm.
-                GetBoardSquare(pos).
-                GetBoardObject().
-                type == BoardType.FOOD)
-            {
-                vec = pos;
-                break;
-            }
-        }
-
-        if(vec != ERROR_VEC)
-        {
-            Move(Common.GetMoveVec(vec - pos));
-            EatFood();
+            fatigueCount--;
             return;
         }
 
-        // 巣を検知
-        foreach (var pos in posList)
+
+        var newPos = ERROR_VEC;
+
+        var posList = GetSearchList();
+
+
+        // 食べ物を検知
+        foreach (var tmpPos in posList)
         {
-            if (gm.GetBoardSquare(pos).GetBoardObject().type == BoardType.NEST)
+            if (gm.GetBoardSquare(tmpPos).GetDropObj().type == DropObj.FOOD)
             {
-                vec = pos;
+                newPos = tmpPos;
                 break;
             }
         }
 
-        if (vec != ERROR_VEC)
+        if (newPos != ERROR_VEC)
         {
-            Move(Common.GetMoveVec(vec - pos));
-            BreakNest();
+            EatFood(newPos);
+            if (gm.GetPlayerPos() != newPos)
+            {
+                Move(Common.GetMoveVec(newPos - pos));
+            }
+            return;
+        }
+
+
+        // 巣を検知
+        foreach (var tmpPos in posList)
+        {
+            if (gm.GetBoardSquare(tmpPos).GetDropObj().type == DropObj.NEST)
+            {
+                newPos = tmpPos;
+                break;
+            }
+        }
+
+        if (newPos != ERROR_VEC)
+        {
+            BreakNest(newPos);
+            // プレイヤーと重ならない
+            if (gm.GetPlayerPos() != newPos)
+            {
+                Move(Common.GetMoveVec(newPos - pos));
+            }
             return;
         }
 
 
         // 素材を検知
-        foreach (var pos in posList)
+        foreach (var tmpPos in posList)
         {
-            if (gm.GetBoardSquare(pos).GetBoardObject().type == BoardType.MATERIAL)
+            if (gm.GetBoardSquare(tmpPos).GetDropObj().type == DropObj.MATERIAL)
             {
-                vec = pos;
+                newPos = tmpPos;
                 break;
             }
         }
 
-        if (vec != ERROR_VEC)
+        if (newPos != ERROR_VEC)
         {
-            Move(Common.GetMoveVec(vec - pos));
-            BreakMaterial();
+            BreakMaterial(newPos);
+            // プレイヤーと重ならない
+            if (gm.GetPlayerPos() != newPos)
+            {
+                Move(Common.GetMoveVec(newPos - pos));
+            }
             return;
+        }
+
+        // プレイヤーには攻撃してこない
+        if (posList.Contains(gm.GetPlayerPos()))
+        {
+            posList.Remove(gm.GetPlayerPos());
         }
 
         // リストから前フレームにいなかった位置をランダム
         posList.Remove(oldPos);
+
         // 袋小路を考慮してエラー処理
         if (posList.Count > 0)
         {
             var index = Random.Range(0, posList.Count);
-            vec = posList[index];
-            Move(Common.GetMoveVec(vec - pos));
+            newPos = posList[index];
+            Move(Common.GetMoveVec(newPos - pos));
             return;
         }
         else
         {
-            vec = oldPos;
-            Move(Common.GetMoveVec(vec - pos));
+            newPos = oldPos;
+            Move(Common.GetMoveVec(newPos - pos));
             return;
         }
 

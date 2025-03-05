@@ -6,65 +6,78 @@ using Const;
 
 public class Cat : EnemyBase
 {
-    public override void CheckMove()
+
+    public override void NightMode()
     {
-
-        var vec = ERROR_VEC;
-
-        var posList = GetCheckList();
-        var isAtack = false;
-
-        // プレイヤーを検知
-        foreach(var pos in posList)
+        //疲労してたら疲労回復してスキップ
+        if (fatigueCount > 0)
         {
-            if(gm.GetPlayerPos() == pos)
-            {
-                isAtack = true;
-                Attack();
-                break;
-            }
-        }
-        if(isAtack)
-        {
+            fatigueCount--;
             return;
         }
 
+
+        var newPos = ERROR_VEC;
+
+        var posList = GetSearchList();
 
         // 巣を検知
-        foreach (var pos in posList)
+        foreach (var tmpPos in posList)
         {
-            if (gm.GetBoardSquare(pos).GetBoardObject().type == BoardType.NEST)
+            if (gm.GetBoardSquare(tmpPos).GetDropObj().type == DropObj.NEST)
             {
-                vec = pos;
+                newPos = tmpPos;
                 break;
             }
         }
 
-        if (vec != ERROR_VEC)
+        if (newPos != ERROR_VEC)
         {
-            Move(Common.GetMoveVec(vec - pos));
-            BreakNest();
+            BreakNest(newPos);
             return;
         }
+
+        // プレイヤーを検知
+        foreach (var tmpPos in posList)
+        {
+            if (gm.GetPlayerPos() == tmpPos)
+            {
+                newPos = tmpPos;
+                break;
+            }
+        }
+
+        if (newPos != ERROR_VEC)
+        {
+            Attack();
+            return;
+        }
+
 
 
         // リストから前フレームにいなかった位置をランダム
         posList.Remove(oldPos);
+
         // 袋小路を考慮してエラー処理
         if (posList.Count > 0)
         {
             var index = Random.Range(0, posList.Count);
-            vec = posList[index];
-            Move(Common.GetMoveVec(vec - pos));
-            EatFood();
+            newPos = posList[index];
+            // 食べ物があったら食べちゃう
+            if(gm.GetBoardSquare(newPos).GetDropObj().type == DropObj.FOOD)
+            {
+                EatFood(newPos);
+            }
+            Move(Common.GetMoveVec(newPos - pos));
             return;
         }
         else
         {
-            vec = oldPos;
-            Move(Common.GetMoveVec(vec - pos));
-            EatFood();
+            newPos = oldPos;
+            Move(Common.GetMoveVec(newPos - pos));
             return;
         }
+
+
     }
 }

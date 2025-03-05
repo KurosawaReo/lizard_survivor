@@ -15,8 +15,8 @@ namespace Const
     //’nŒ`î•ñ.
     public enum BoardTerrain
     {
+        GROUND,   //°.
         WALL,    //•Ç.
-        GROUND   //°.
     };
     //—‚¿‚Ä‚é•¨î•ñ.
     public enum DropObj

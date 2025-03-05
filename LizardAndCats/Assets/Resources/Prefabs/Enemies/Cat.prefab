@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb6a2ea3a1720ca40b1b5a9557bb75d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fatigueAmount: 3
+  frequency: 0
 --- !u!1 &1637419530225670027
 GameObject:
   m_ObjectHideFlags: 0
