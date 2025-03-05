@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,26 @@ namespace Const
         TAIL      //êKîˆ.
     };
 
+    /// <summary>
+    /// à⁄ìÆï˚å¸
+    /// </summary>
+    public enum MoveVec
+    {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT,
+    }
+
+
+    public enum StageId
+    {
+        STAGE_01,
+        STAGE_02,
+        STAGE_03,
+
+        END_LESS,
+    }
     public class Common
     {
         // íËêî
@@ -59,6 +80,27 @@ namespace Const
             Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
 
             return (leftBottom, rightTop);
+        }
+
+
+        public static MoveVec GetMoveVec(Vector2Int _vec)
+        {
+            if (_vec == Vector2Int.down)
+            {
+                return MoveVec.UP;
+            }
+            else if (_vec == Vector2Int.left)
+            {
+                return MoveVec.LEFT;
+            }
+            else if (_vec == Vector2Int.right)
+            {
+                return MoveVec.RIGHT;
+            }
+            else
+            {
+                return MoveVec.DOWN;
+            }
         }
     }
 }
