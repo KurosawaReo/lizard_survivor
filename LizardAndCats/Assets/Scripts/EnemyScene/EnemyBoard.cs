@@ -36,10 +36,10 @@ public class EnemyBoard : MonoBehaviour
             {
 
                 //Žü‚è‚Ìƒ}ƒX.
-                if (i == 0 || j == 0 || i == board.GetLength(0) - 1 || j == board.GetLength(1) - 1)
-                {
-                    board[i, j].SetTerrain(BoardTerrain.WALL);
-                }
+                //if (i == 0 || j == 0 || i == board.GetLength(0) - 1 || j == board.GetLength(1) - 1)
+                //{
+                //    board[i, j].SetTerrain(BoardTerrain.WALL);
+                //}
             }
         }
     }
@@ -74,7 +74,11 @@ public class EnemyBoard : MonoBehaviour
             }
         }
     }
+    public Board[,] GetBoard()
+    {
 
+        return board;
+    }
     void Update()
     {
 
