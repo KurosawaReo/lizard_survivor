@@ -6,9 +6,9 @@ using Const;
 
 public class BoardObject
 {
-    BoardType type;
-    int id;
-    int hp;
+    public BoardType type;
+    public int id;
+    public int hp;
 
     public BoardObject(BoardType _type, int _id, int _hp)
     {
