@@ -4,49 +4,67 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-/*
-public Vector2Int pos
-{
-    //プロパティと呼ばれる機能.
-    //Unityでのセッタ,ゲッタはこれだけでok. 
-    get; set;
-}
-*/
-
 //プレイヤー(トカゲ)の情報.
 public class Lizard
 {
-    public Vector2Int pos //現在位置.
+    //現在位置.
+    public Vector2Int pos
+    { 
+        get; set; //csはこれだけでゲッターセッターができる.
+    }
+    //体力.
+    public int hp
+    {
+        get; set;
+    }
+    //尻尾があるかどうか.
+    public bool isTail
     { 
         get; set; 
     }
-    public int life //残機.
+    //尻尾回復ゲージ.
+    public int tailGage
+    {
+        get; set;
+    }
+    //持ち物.
+    public DropObj[] inventory 
     {
         get; set;
     }
 
     //初期化処理(コンストラクタ)
-    public Lizard(Vector2Int _pos, int _life)
+    public Lizard(Vector2Int _pos, int _hp, bool _isTail, int _tailGage, DropObj[] _inventory)
     {
-        pos  = _pos;
-        life = _life;
+        pos       = _pos;
+        hp        = _hp;
+        isTail    = _isTail;
+        tailGage  = _tailGage;
+        inventory = _inventory;
     }
 }
 
 public class LizardManager : MonoBehaviour
 {
-    [Header("- prefab -")]
-    [SerializeField] GameObject prfbNest;   //巣prefab.
-    [SerializeField] GameObject prfbNestIn; //prefabの入る所.
-
     [Header("- script -")]
     [SerializeField] GameObject objBrdMng; //BoardManager.
     BoardManager scptBrdMng;
 
-    //トカゲの情報を補間する変数.
+    //トカゲの情報.
     Lizard lizard = new Lizard(
+ 
         new Vector2Int(1, 1),   //pos.
-        Common.LIZARD_LIFE_MAX  //life.
+        Common.LIZARD_LIFE_MAX, //life.
+        true,                   //isTail.
+        0,                      //tailGage.
+
+        //inventory.
+        new DropObj[Common.INVENTORY_CNT] {
+            DropObj.NONE,
+            DropObj.NONE,
+            DropObj.NONE,
+            DropObj.NONE
+        }
     );
 
     void Start()
@@ -89,16 +107,38 @@ public class LizardManager : MonoBehaviour
             tmpPos += Vector2Int.right;
         }
 
-        //マスの範囲内である.
+        //範囲外に出ていなければ.
         if(tmpPos.x >= 0 && tmpPos.x < Common.BOARD_WID &&
            tmpPos.y >= 0 && tmpPos.y < Common.BOARD_HEI)
         {
-            //移動できる空間がある.
+            //移動先のマスの物取得.
+            var brdTer = scptBrdMng.GetBoard(tmpPos).GetTerrain();
+            var brdObj = scptBrdMng.GetBoard(tmpPos).GetObject();
+
+            //障害物がなければ.
             if (
-                scptBrdMng.GetBoard(tmpPos).GetTerrain() != BoardTerrain.WALL
-                /* TODO: 敵たちの座標 */
+                brdTer != BoardTerrain.WALL
+                /* TODO:敵たちの座標 */
             ){
-                lizard.pos = tmpPos; //移動実行.
+                //移動実行.
+                lizard.pos = tmpPos;
+
+                //尻尾がないなら.
+                if (!lizard.isTail){
+                    //食べ物があれば.
+                    if (brdObj.type == DropObj.FOOD)
+                    {
+                        EatFood(); //食べる処理.
+                    }
+                }
+#if false
+                //敵がいれば.
+                if (/* TODO:敵たちの座標 */)
+                {
+                    //ダメージ処理.
+                    HpDamage();
+                }
+#endif
             }
         }
     }
@@ -108,8 +148,46 @@ public class LizardManager : MonoBehaviour
         //スペースを押したら.
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
+            var board = scptBrdMng.GetBoard(lizard.pos);    //[取得]現在マスの情報.
+            board.SetObject(DropObj.NEST, "none", 1, 0, 0); //[編集]巣にする.
+            scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
         }
+    }
+
+    //食べ物処理.
+    private void EatFood()
+    {
+        var board = scptBrdMng.GetBoard(lizard.pos); //[取得]現在マスの情報.
+
+        //尻尾回復ゲージ増加.
+        lizard.tailGage += board.GetObject().heal;
+        //ゲージが最大になったら
+        if(lizard.tailGage >= Common.LIZARD_HEALGAGE_MAX)
+        {
+            lizard.tailGage = 0;
+            lizard.isTail = true; //尻尾復活.
+        }
+        
+        //食べ物を消す.
+        board.SetObject(DropObj.NONE, "none", 0, 0, 0); //[編集]無にする.
+        scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
+    }
+
+    //ダメージ処理.
+    private void HpDamage()
+    {
+        lizard.hp -= 1;
+
+        //残機0になったら.
+        if(lizard.hp <= 0)
+        {
+            LizardDeath();
+        }
+    }
+    //死亡処理.
+    private void LizardDeath()
+    {
+        /* TODO:プレイヤー死亡 */
     }
 
     //移動実行.

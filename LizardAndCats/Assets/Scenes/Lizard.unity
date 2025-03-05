@@ -374,7 +374,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1239307752}
   m_Layer: 0
-  m_Name: Nests
+  m_Name: DropObjects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -462,8 +462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 985de1f8355498d4ea4d04e05721a5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prfbNest: {fileID: 548364827802148581, guid: 5c01e45e4a750a743981d1038af3c46e, type: 3}
-  prfbNestIn: {fileID: 1239307751}
   objBrdMng: {fileID: 1469511291}
 --- !u!1 &1469511291
 GameObject:
@@ -496,6 +494,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prfbSquare: {fileID: 548364827802148581, guid: da7fdd0e6252b8b4f800c31f94d27fc1, type: 3}
   prfbSquareIn: {fileID: 103751427}
+  prfbNest: {fileID: 548364827802148581, guid: 5c01e45e4a750a743981d1038af3c46e, type: 3}
+  prfbFood: {fileID: 548364827802148581, guid: 865a54539b180be438d1b435bb23698d, type: 3}
+  prfbMaterial: {fileID: 548364827802148581, guid: eadbef7915a0a0f4f86e108de01b1318, type: 3}
+  prfbTail: {fileID: 548364827802148581, guid: 05f3e04f8ca85c345bdb74a01d025ed9, type: 3}
+  prfbDropObjIn: {fileID: 1239307751}
 --- !u!4 &1469511293
 Transform:
   m_ObjectHideFlags: 0

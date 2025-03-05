@@ -18,7 +18,7 @@ namespace Const
         GROUND   //床.
     };
     //落ちてる物情報.
-    public enum BoardType
+    public enum DropObj
     {
         NONE,     //なし.
         NEST,     //巣.
@@ -32,13 +32,16 @@ namespace Const
         // 定数
         public const string SCENE_NAME_TITLE = "Title";
 
-        public const int   BOARD_WID = 6;         //board配列の横.
-        public const int   BOARD_HEI = 6;         //board配列の縦.
-        public const float BOARD_BASE_X = 2f;     //board左上の座標x.
-        public const float BOARD_BASE_Y = 1f;     //board左上の座標y.
-        public const float BOARD_GRID_SIZE = 1f;  //マスを描画するサイズ.
+        public const int   BOARD_WID = 6;            //board配列の横.
+        public const int   BOARD_HEI = 6;            //board配列の縦.
+        public const float BOARD_BASE_X = 2f;        //board左上の座標x.
+        public const float BOARD_BASE_Y = 1f;        //board左上の座標y.
+        public const float BOARD_GRID_SIZE = 1.2f;   //マスを描画するサイズ.
 
-        public const int   LIZARD_LIFE_MAX = 3;   //リザードの最大体力.
+        public const int   LIZARD_LIFE_MAX = 1;      //トカゲの最大体力.
+        public const int   LIZARD_HEALGAGE_MAX = 10; //トカゲの回復ゲージ最大.
+
+        public const int   INVENTORY_CNT = 4;        //インベントリ個数.
 
         // 汎用関数
         public static void LoadScene(string _sceneName)
