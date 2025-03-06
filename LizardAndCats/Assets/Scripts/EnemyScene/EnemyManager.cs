@@ -36,12 +36,12 @@ public class EnemyManager : MonoBehaviour
                 //enemies.Add(obj);
 
                 obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
-                obj.Init(new Vector2Int(1, 4), this, gm.cellSize);
+                obj.Init(new Vector2Int(1, 3), this, gm.cellSize);
                 enemies.Add(obj);
 
-                //obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
-                //obj.Init(new Vector2Int(4, 1), this, gm.cellSize);
-                //enemies.Add(obj);
+                obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(2, 2), this, gm.cellSize);
+                enemies.Add(obj);
 
 
                 break;
@@ -53,7 +53,7 @@ public class EnemyManager : MonoBehaviour
                 obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
                 obj.Init(new Vector2Int(4, 1), this, gm.cellSize);
                 enemies.Add(obj);
-                obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
+                obj = Instantiate(prefabSnake).GetComponent<EnemyBase>();
                 obj.Init(new Vector2Int(4, 3), this, gm.cellSize);
                 enemies.Add(obj);
                 break;
