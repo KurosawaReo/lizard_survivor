@@ -372,4 +372,104 @@ public class LizardManager : MonoBehaviour
     }
 
     public bool IsTail() { return lizard.isTail; }
+
+    /// <summary>
+    /// 移動アニメ開始.
+    /// </summary>
+    private void MoveAnimStart()
+    {
+        lizard.isOpeAble = false; //アニメ中は操作不可.
+    }
+    /// <summary>
+    /// 移動アニメ処理.
+    /// </summary>
+    private void MoveAnim()
+    {
+        //1秒で+1.
+        anim.timer += Time.deltaTime;
+        //移動量.
+        float move = Common.LIZARD_MOVE_ANIM_VEL * Time.deltaTime;
+
+        //トカゲの向き別.
+        switch (lizard.dir)
+        {
+            case Direction.UP:
+                objLizardImg.transform.localPosition += new Vector3(0, +move, 0);
+                break;
+            case Direction.DOWN:
+                objLizardImg.transform.localPosition += new Vector3(0, -move, 0);
+                break;
+            case Direction.RIGHT:
+                objLizardImg.transform.localPosition += new Vector3(+move, 0, 0);
+                break;
+            case Direction.LEFT:
+                objLizardImg.transform.localPosition += new Vector3(-move, 0, 0);
+                break;
+        }
+
+        //前半.
+        if (!anim.isMidPass)
+        {
+            //前半終了.
+            if (anim.timer >= Common.LIZARD_MOVE_ANIM_SEC / 2)
+            {
+                anim.isMidPass = true;
+                MoveAnimMid();
+            }
+        }
+        //後半.
+        else
+        {
+            //後半終了.
+            if (anim.timer >= Common.LIZARD_MOVE_ANIM_SEC)
+            {
+                anim.timer = 0;
+                anim.isMidPass = false;
+                MoveAnimEnd();
+            }
+        }
+    }
+    /// <summary>
+    /// 移動アニメ中盤.
+    /// </summary>
+    private void MoveAnimMid()
+    {
+        //トカゲの移動実行.
+        Common.BoardPosSet(gameObject, lizard.pos.x, lizard.pos.y, false);
+
+        //トカゲ画像の相対座標を反転(→アニメーションを繋ぐのに必要)
+        objLizardImg.transform.localPosition = -objLizardImg.transform.localPosition;
+    }
+    /// <summary>
+    /// 移動アニメ終了.
+    /// </summary>
+    private void MoveAnimEnd()
+    {
+        //操作可能に.
+        lizard.isOpeAble = true;
+        //位置リセット.
+        objLizardImg.transform.localPosition = Vector3.zero;
+
+        //尻尾がないなら.
+        if (!lizard.isTail)
+        {
+            //移動先のマスの物取得.
+            var brdDrop = scptBrdMng.GetBoard(lizard.pos).GetDropObj();
+            //食べ物があれば.
+            if (brdDrop.type == DropObj.FOOD)
+            {
+                EatFood(); //食べる処理.
+            }
+        }
+
+        //TODO:自分から敵にぶつかった時どうなる?<<<<<<<<<<<<<<<<<<<<<<<
+#if false
+        //敵がいれば.
+        if (/* TODO:敵たちの座標 */)
+        {
+            //ダメージ処理.
+            HpDamage();
+        }
+#endif
+    }
 }
