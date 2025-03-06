@@ -349,7 +349,7 @@ public class LizardManager : MonoBehaviour
         if (!anim.isMidPass)
         {
             //前半終了.
-            if (anim.timer >= (float)Common.LIZARD_MOVE_ANIM_SEC/2)
+            if (anim.timer >= Common.LIZARD_MOVE_ANIM_SEC/2)
             {
                 anim.isMidPass = true;
                 MoveAnimMid();
@@ -374,7 +374,8 @@ public class LizardManager : MonoBehaviour
     {
         //トカゲの移動実行.
         Common.BoardPosSet(gameObject, lizard.pos.x, lizard.pos.y, false);
-        //画像の相対座標を反転(→アニメーションを繋ぐのに必要)
+
+        //トカゲ画像の相対座標を反転(→アニメーションを繋ぐのに必要)
         objLizardImg.transform.localPosition = -objLizardImg.transform.localPosition;
     }
     /// <summary>

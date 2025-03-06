@@ -61,12 +61,12 @@ public class BoardManager : MonoBehaviour
     private void BoardInit()
     {
         //食べ物の設置(仮)
-        //board[1, 1].SetObject(DropObj.FOOD, "foodA", 0, 3, 0);
-        //board[1, 2].SetObject(DropObj.FOOD, "foodB", 0, 3, 0);
-        //board[1, 3].SetObject(DropObj.FOOD, "foodC", 0, 3, 0);
-        //board[1, 4].SetObject(DropObj.NEST, "foodC", 0, 3, 0);
-        //board[1, 5].SetObject(DropObj.MATERIAL, "foodC", 0, 3, 0);
-        //board[2, 3].SetObject(DropObj.TAIL, "foodC", 0, 3, 0);
+        board[1, 1].SetObject(DropObj.FOOD, "foodA", 0, 3, 0);
+        board[1, 2].SetObject(DropObj.FOOD, "foodB", 0, 3, 0);
+        board[1, 3].SetObject(DropObj.FOOD, "foodC", 0, 3, 0);
+        board[1, 4].SetObject(DropObj.NEST, "foodC", 0, 3, 0);
+        board[2, 2].SetObject(DropObj.MATERIAL, "foodC", 0, 3, 0);
+        board[2, 3].SetObject(DropObj.TAIL, "foodC", 0, 3, 0);
 
         /*
         //盤面ループ.
