@@ -77,7 +77,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySE(string soundName, float volume = 1.0f)
     {
-        //g‚¢•û:SoundManger.Instance.PlaySE("Click", 0.5f); 50% ‚Ì‰¹—Ê‚ÅÄ¶
+        //g‚¢•û:SoundManger.Instance.PlaySE("–½–¼", 0.5f); 50% ‚Ì‰¹—Ê‚ÅÄ¶
         if (audioSource == null)
         {
             Debug.LogError("AudioSource‚ªİ’è‚³‚ê‚Ä‚È‚¢");
