@@ -957,7 +957,7 @@ GameObject:
   - component: {fileID: 455874798}
   - component: {fileID: 455874799}
   m_Layer: 0
-  m_Name: Manager
+  m_Name: TitleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1301,7 +1301,7 @@ GameObject:
   - component: {fileID: 623958336}
   - component: {fileID: 623958335}
   m_Layer: 0
-  m_Name: VolomeManage
+  m_Name: VolomeManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2688,7 +2688,7 @@ GameObject:
   - component: {fileID: 1576300151}
   - component: {fileID: 1576300150}
   m_Layer: 0
-  m_Name: SoundManage
+  m_Name: SoundManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,4 +1,4 @@
-using Const;
+using Gloval;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BoardData", menuName = "GameData/BoardData")]

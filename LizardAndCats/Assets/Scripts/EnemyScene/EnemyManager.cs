@@ -1,10 +1,14 @@
-using Const;
+/*
+   - EnemyManager.cs -
+   敵のメインプログラム.
+*/
+using Gloval;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    const int MAX_ENEMIES = 32;
+//  const int MAX_ENEMIES = 32;
 
     [Tooltip("全エネミー配列")]
     List<EnemyBase> enemies = new List<EnemyBase>();
@@ -18,12 +22,10 @@ public class EnemyManager : MonoBehaviour
     GameManager gm;
     LizardManager lm;
 
-
     public void Init(StageId _stageId, GameManager _gm, LizardManager _lm)
     {
         gm = _gm;
         lm = _lm;
-
 
         //ステージごとに初期化処理を変更する
         switch (_stageId)
@@ -43,7 +45,6 @@ public class EnemyManager : MonoBehaviour
                 obj.Init(new Vector2Int(2, 2), this, gm.cellSize);
                 enemies.Add(obj);
 
-
                 break;
             case StageId.STAGE_02:
                 obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
@@ -57,7 +58,6 @@ public class EnemyManager : MonoBehaviour
                 obj.Init(new Vector2Int(4, 3), this, gm.cellSize);
                 enemies.Add(obj);
                 break;
-
 
             case StageId.STAGE_03:
                 obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
@@ -87,6 +87,7 @@ public class EnemyManager : MonoBehaviour
                 //obj.Init(new Vector2Int(1, 7), this, gm.cellSize);
                 //enemies.Add(obj);
                 break;
+
             case StageId.END_LESS:
                 obj = Instantiate(prefabSnake).GetComponent<EnemyBase>();
                 obj.Init(new Vector2Int(1, 4), this, gm.cellSize);
@@ -118,9 +119,6 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-
-
-
     public void EnemiesMove()
     {
         // 昼と夜で違う動きする
@@ -133,13 +131,10 @@ public class EnemyManager : MonoBehaviour
             }
             else
             {
-
                 enemies[i].NightMode();
-
             }
         }
     }
-
 
     public bool IsNoEnemies(Vector2Int _pos)
     {
@@ -152,7 +147,6 @@ public class EnemyManager : MonoBehaviour
         }
         return true;
     }
-
 
     /// <summary>
     /// プレイヤーに攻撃する処理

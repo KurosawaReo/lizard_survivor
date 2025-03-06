@@ -1,9 +1,12 @@
-using Const;
+/*
+   - Snake.cs -
+   敵(ヘビ)のプログラム.
+*/
+using Gloval;
 using UnityEngine;
 
 public class Snake : EnemyBase
 {
-
     public override void NightMode()
     {
         //疲労してたら疲労回復してスキップ
@@ -16,7 +19,6 @@ public class Snake : EnemyBase
             return;
         }
         transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
-
 
         var newPos = ERROR_VEC;
 
@@ -42,11 +44,10 @@ public class Snake : EnemyBase
             EatFood(newPos);
             if (gm.GetPlayerPos() != newPos)
             {
-                Move(Common.GetMoveVec(newPos - pos));
+                Move(Gl_Func.GetMoveDir(newPos - pos));
             }
             return;
         }
-
 
         // 巣を検知
         foreach (var tmpPos in posList)
@@ -64,11 +65,10 @@ public class Snake : EnemyBase
             // プレイヤーと重ならない
             if (gm.GetPlayerPos() != newPos)
             {
-                Move(Common.GetMoveVec(newPos - pos));
+                Move(Gl_Func.GetMoveDir(newPos - pos));
             }
             return;
         }
-
 
         // 素材を検知
         foreach (var tmpPos in posList)
@@ -86,7 +86,7 @@ public class Snake : EnemyBase
             // プレイヤーと重ならない
             if (gm.GetPlayerPos() != newPos)
             {
-                Move(Common.GetMoveVec(newPos - pos));
+                Move(Gl_Func.GetMoveDir(newPos - pos));
             }
             return;
         }
@@ -105,16 +105,14 @@ public class Snake : EnemyBase
         {
             var index = Random.Range(0, posList.Count);
             newPos = posList[index];
-            Move(Common.GetMoveVec(newPos - pos));
+            Move(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
         else
         {
             newPos = oldPos;
-            Move(Common.GetMoveVec(newPos - pos));
+            Move(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
-
-
     }
 }

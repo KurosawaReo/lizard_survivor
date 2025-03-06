@@ -1,7 +1,9 @@
-
+/*
+   - Cat.cs -
+   敵(ネコ)のプログラム.
+*/
+using Gloval;
 using UnityEngine;
-
-using Const;
 
 public class Cat : EnemyBase
 {
@@ -18,8 +20,6 @@ public class Cat : EnemyBase
         }
     }
 
-
-
     public override void NightMode()
     {
         //疲労してたら疲労回復してスキップ
@@ -31,7 +31,6 @@ public class Cat : EnemyBase
             return;
         }
         transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
-
 
         var newPos = ERROR_VEC;
 
@@ -70,11 +69,9 @@ public class Cat : EnemyBase
 
         if (newPos != ERROR_VEC)
         {
-            Attack(Common.GetMoveVec(newPos - pos));
+            Attack(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
-
-
 
         // リストから前フレームにいなかった位置をランダム
         posList.Remove(oldPos);
@@ -89,16 +86,14 @@ public class Cat : EnemyBase
             {
                 EatFood(newPos);
             }
-            Move(Common.GetMoveVec(newPos - pos));
+            Move(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
         else
         {
             newPos = oldPos;
-            Move(Common.GetMoveVec(newPos - pos));
+            Move(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
-
-
     }
 }

@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+/*
+   - Fox.cs -
+   敵(キツネ)のプログラム.
+*/
+using Gloval;
 using UnityEngine;
-
-using Const;
-
 
 public class Fox : EnemyBase
 {
-
-
-
     public override void NightMode()
     {
         //疲労してたら疲労回復してスキップ
@@ -21,9 +18,6 @@ public class Fox : EnemyBase
             return;
         }
         transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
-
-
-
 
         var newPos = ERROR_VEC;
 
@@ -50,7 +44,7 @@ public class Fox : EnemyBase
             // プレイヤーと重ならない
             if (gm.GetPlayerPos() != newPos)
             {
-                Move(Common.GetMoveVec(newPos - pos));
+                Move(Gl_Func.GetMoveDir(newPos - pos));
             }
             return;
         }
@@ -67,7 +61,7 @@ public class Fox : EnemyBase
 
         if (newPos != ERROR_VEC)
         {
-            Attack(Common.GetMoveVec(newPos - pos));
+            Attack(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
 
@@ -86,7 +80,7 @@ public class Fox : EnemyBase
             EatFood(newPos);
             if (gm.GetPlayerPos() != newPos)
             {
-                Move(Common.GetMoveVec(newPos - pos));
+                Move(Gl_Func.GetMoveDir(newPos - pos));
             }
             return;
         }
@@ -107,12 +101,10 @@ public class Fox : EnemyBase
             // プレイヤーと重ならない
             if (gm.GetPlayerPos() != newPos)
             {
-                Move(Common.GetMoveVec(newPos - pos));
+                Move(Gl_Func.GetMoveDir(newPos - pos));
             }
             return;
         }
-
-
 
         // リストから前フレームにいなかった位置をランダム
         posList.Remove(oldPos);
@@ -124,17 +116,14 @@ public class Fox : EnemyBase
         {
             var index = Random.Range(0, posList.Count);
             newPos = posList[index];
-            Move(Common.GetMoveVec(newPos - pos));
+            Move(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
         else
         {
             newPos = oldPos;
-            Move(Common.GetMoveVec(newPos - pos));
+            Move(Gl_Func.GetMoveDir(newPos - pos));
             return;
         }
-
-
-
     }
 }

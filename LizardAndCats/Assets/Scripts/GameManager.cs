@@ -1,4 +1,9 @@
-using Const;
+/*
+   - GameManager.cs -
+   ゲーム全体の管理プログラム.
+   BoardManagerはここに吸収されたっぽい?
+*/
+using Gloval;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +20,8 @@ public class GameManager : MonoBehaviour
     Board[,] board;
     [Tooltip("盤面のインスタンス")]
     Square[,] boardInst = new Square[TMP_LEN, TMP_LEN];
+    [Tooltip("盤面表示座標(左上)")]
+    public Vector2 boardTopLeft { get; private set; }
     [Tooltip("セルサイズ")]
     public float cellSize { get; private set; }
     [Tooltip("道の画像"), SerializeField]
@@ -22,11 +29,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("道の画像"), SerializeField]
     Sprite sprWall;
 
-
     [Header("- 敵管理系 -")]
     [Tooltip("敵の管理クラスのインスタンス"), SerializeField]
     EnemyManager em;
-
 
     [Header("- プレイヤー系 -")]
     [Tooltip("プレイヤーprefab"), SerializeField]
@@ -61,10 +66,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("現在の昼or夜を加算する変数")]
     int currentTimeZoneCount = 0;
 
-
-
-
-
     [Header("- UI系 -")]
     [Tooltip("太陽の画像"), SerializeField]
     Image imgSun;
@@ -89,23 +90,17 @@ public class GameManager : MonoBehaviour
     [Tooltip("経過ターン数の表示用テキスト"), SerializeField]
     Text textResultElapsedTurn;
 
-    const int LV1 = 4;
-    const int LV2 = 5;
-    const int LV3 = 6;
-
     void Start()
     {
-        //stageId = StageId.END_LESS;
-
-        stageId = (StageId)PlayerPrefs.GetInt(Common.KEY_GAME_LEVEL, 0);
-
         lm = Instantiate(prefabPlayer).GetComponent<LizardManager>();
 
+        stageId = (StageId)PlayerPrefs.GetInt(Gl_Const.KEY_GAME_LEVEL, 0);
+        //stageId = StageId.END_LESS;
+
+        //初期化処理.
         BoardInit();
         BoardMake();
-
-        // UIの初期化
-        UIDisplay();
+        UIDisplay(); //UI.
 
         imgResultPanel.gameObject.SetActive(false);
 
@@ -119,6 +114,11 @@ public class GameManager : MonoBehaviour
 
     private void BoardInit()
     {
+        //定数の簡略化.
+        const int LV1 = Gl_Const.STAGE_LV1_BOARD_SIZE;
+        const int LV2 = Gl_Const.STAGE_LV2_BOARD_SIZE;
+        const int LV3 = Gl_Const.STAGE_LV3_BOARD_SIZE;
+
         switch (stageId)
         {
             case StageId.STAGE_01:
@@ -135,6 +135,7 @@ public class GameManager : MonoBehaviour
                 boardInst = new Square[LV1, LV1];
                 completeDays = 72;
                 break;
+
             case StageId.STAGE_02:
                 lm.SetPos(new Vector2Int());
 
@@ -150,6 +151,7 @@ public class GameManager : MonoBehaviour
                 boardInst = new Square[LV2, LV2];
                 completeDays = 108;
                 break;
+
             case StageId.STAGE_03:
                 lm.SetPos(new Vector2Int());
                 board = new Board[LV3, LV3]
@@ -166,6 +168,7 @@ public class GameManager : MonoBehaviour
                 boardInst = new Square[LV3, LV3];
                 completeDays = 144;
                 break;
+
             case StageId.END_LESS:
                 lm.SetPos(new Vector2Int());
                 board = new Board[LV3, LV3]
@@ -185,30 +188,24 @@ public class GameManager : MonoBehaviour
 
     private void BoardMake()
     {
-        //ウィンドウの端の座標取得.
-        var (lb, rt) = Common.GetWorldWindowSize();
-        cellSize = (rt.y - lb.y) / board.GetLength(0);
-        var center = new Vector3((lb.x + rt.x) / 2, (lb.y + rt.y) / 2, 0);
-        var boardTopLeft = center + new Vector3(-cellSize * (board.GetLength(0) - 1) / 2, cellSize * (board.GetLength(0) - 1) / 2, 0);
+        //盤面表示座標の取得.
+        boardTopLeft = Gl_Func.GetBoardTopLeft(board.GetLength(0));
+        //セルサイズの取得.
+        cellSize = Gl_Func.GetBoardCellSize(board.GetLength(0));
 
         //盤面ループ.
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-
                 //背景の生成.
                 //var pos = new Vector3(lb.x + j + 0.5f, rt.y - i - 0.5f, 0);
-                var pos = boardTopLeft + new Vector3(j * cellSize, -i * cellSize, 0);
+                var pos = boardTopLeft + new Vector2(j * cellSize, -i * cellSize);
                 var obj = Instantiate(squarePrfb, pos, Quaternion.identity);
 
                 var ls = obj.transform.localScale;
                 ls *= cellSize;
                 obj.transform.localScale = ls;
-
-                Debug.Log("定数調整用 cellSize:" + cellSize);
-                Debug.Log("定数調整用 localScale:" + ls);
-                Debug.Log("定数調整用 boardTopLeft:" + boardTopLeft);
 
                 //マスデータ別.
                 switch (board[i, j].GetTerrain())
@@ -226,7 +223,6 @@ public class GameManager : MonoBehaviour
 
                 boardInst[i, j] = obj.GetComponent<Square>();
                 boardInst[i, j].Init();
-
             }
         }
     }
@@ -237,14 +233,12 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
-
-                print("タイトルに戻る");
+                //print("タイトルに戻る");
                 BackTitle();
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
-
-                print("同じ難易度でリプレイ");
+                //print("同じ難易度でリプレイ");
                 Replay();
             }
         }
@@ -279,7 +273,6 @@ public class GameManager : MonoBehaviour
         return board[_pos.y, _pos.x];
     }
 
-
     public Vector3 GetCellWorldPosition(Vector2Int _pos)
     {
         if (_pos.x < 0 || _pos.x >= board.GetLength(1) || _pos.y < 0 || _pos.y >= board.GetLength(0))
@@ -289,7 +282,7 @@ public class GameManager : MonoBehaviour
         }
 
         // 画面中央を基準に盤面の左上座標を計算
-        var (lb, rt) = Common.GetWorldWindowSize();
+        var (lb, rt) = Gl_Func.GetWorldWindowSize();
         var center = new Vector3((lb.x + rt.x) / 2, (lb.y + rt.y) / 2, 0);
         var boardTopLeft = center + new Vector3(-cellSize * (board.GetLength(0) - 1) / 2, cellSize * (board.GetLength(0) - 1) / 2, 0);
 
@@ -301,7 +294,6 @@ public class GameManager : MonoBehaviour
     {
         return isPlayerWait;
     }
-
 
     public void PlayerTurnEnd()
     {
@@ -335,9 +327,6 @@ public class GameManager : MonoBehaviour
             boardInst[pos.y, pos.x].SetObj(DropObj.MATERIAL);
         }
 
-
-
-
         currentElapsedTurns++;
         currentTimeZoneCount++;
         if (isDayTime)
@@ -359,18 +348,14 @@ public class GameManager : MonoBehaviour
 
         UIDisplay();
 
-
-
         if (currentElapsedTurns >= completeDays)
         {
             ShowResult(true);
             return;
         }
 
-
         isPlayerWait = true;
     }
-
 
     public List<Vector2Int> GetNoneSquares()
     {
@@ -394,12 +379,10 @@ public class GameManager : MonoBehaviour
         return ret;
     }
 
-
     public Vector2Int GetPlayerPos()
     {
         return lm.GetPos();
     }
-
 
     public void ShowResult(bool _isWin)
     {
@@ -421,17 +404,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void Replay()
     {
-        print("リプレイ");
-        Common.LoadScene("GameScene");
+        //print("リプレイ");
+        Gl_Func.LoadScene("GameScene");
     }
 
     public void BackTitle()
     {
-        Common.LoadScene("TitleScene");
-        print("止める");
+        //print("止める");
+        Gl_Func.LoadScene("TitleScene");
     }
 
     public void ConsumeMaterial()
@@ -463,8 +445,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    void UIDisplay()
+    //UI表示(更新)
+    public void UIDisplay()
     {
         imgTailGauge.fillAmount = lm.GetNormalizedTailGaugeAMount();
         if (lm.IsTail())
@@ -476,12 +458,9 @@ public class GameManager : MonoBehaviour
             imgTailIcon.color = Color.gray;
         }
 
-
         var tmp = imgRotate.transform.rotation;
         tmp.eulerAngles = new Vector3(0, 0, currentElapsedTurns * -(360f / (LENGTH_DAYTIME + LENGTH_NIGHT)));
         imgRotate.transform.rotation = tmp;
-
-
 
         textElapsedTurns.text = "経過ターン:" + currentElapsedTurns;
         textRemainingTurns.text = "終了まで後:" + (completeDays - currentElapsedTurns);

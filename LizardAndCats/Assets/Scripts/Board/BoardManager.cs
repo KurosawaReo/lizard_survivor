@@ -1,13 +1,11 @@
 /*
    - BoardGenerator.cs -
-   黒澤ver.
+   仮で作ったもの.
+   おそらくGameManagerとして生まれ変わったため
+   ここはもう使われていない.
 */
-using System.Collections;
-using System.Collections.Generic;
+using Gloval;
 using UnityEngine;
-
-//ヘッダのような使い方.
-using Const;
 
 /// <summary>
 /// 盤面生成のプログラム.
@@ -29,7 +27,7 @@ public class BoardManager : MonoBehaviour
     //  [SerializeField] Sprite catImg;
 
     //盤面データ.
-    Board[,] board = new Board[Common.BOARD_HEI, Common.BOARD_WID] //Board[y, x]
+    Board[,] board = new Board[Gl_Const.STAGE_LV3_BOARD_SIZE, Gl_Const.STAGE_LV3_BOARD_SIZE] //Board[y, x]
     {
         { new Board(BoardTerrain.WALL)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL)   },
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL)   },
@@ -89,7 +87,7 @@ public class BoardManager : MonoBehaviour
 
                 //prefabの生成.
                 var ter = Instantiate(prfbSquare, prfbSquareIn.transform);
-                Common.BoardPosSet(ter, j, i, true);
+                Gl_Func.BoardPosSet(ter, j, i, board.GetLength(0), true);
 
                 //boardの地形別.
                 switch (board[i, j].GetTerrain())
@@ -112,26 +110,26 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-                //boardの落ちてる物別.
+                //boardの落下物別.
                 switch (board[i, j].GetDropObj().type)
                 {
                     case DropObj.NONE: //無し.
                         break;
                     case DropObj.NEST: //巣.
                         var nest = Instantiate(prfbNest, prfbDropObjIn.transform);
-                        Common.BoardPosSet(nest, j, i, false);
+                        Gl_Func.BoardPosSet(nest, j, i, board.GetLength(0), false);
                         break;
                     case DropObj.FOOD: //食べ物.
                         var food = Instantiate(prfbFood, prfbDropObjIn.transform);
-                        Common.BoardPosSet(food, j, i, false);
+                        Gl_Func.BoardPosSet(food, j, i, board.GetLength(0), false);
                         break;
                     case DropObj.MATERIAL: //素材.
                         var material = Instantiate(prfbMaterial, prfbDropObjIn.transform);
-                        Common.BoardPosSet(material, j, i, false);
+                        Gl_Func.BoardPosSet(material, j, i, board.GetLength(0), false);
                         break;
                     case DropObj.TAIL: //尻尾.
                         var tail = Instantiate(prfbTail, prfbDropObjIn.transform);
-                        Common.BoardPosSet(tail, j, i, false);
+                        Gl_Func.BoardPosSet(tail, j, i, board.GetLength(0), false);
                         break;
                 }
             }

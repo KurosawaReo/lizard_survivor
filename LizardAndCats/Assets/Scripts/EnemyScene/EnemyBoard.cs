@@ -1,10 +1,15 @@
-using Const;
+/*
+   - EnemyBoard.cs -
+   詳細不明.
+   おそらくテスト用に作られたもので採用されていない?
+*/
+using Gloval;
 using UnityEngine;
 
 public class EnemyBoard : MonoBehaviour
 {
     //盤面データ.
-    Board[,] board = new Board[Common.BOARD_WID, Common.BOARD_HEI]
+    Board[,] board = new Board[Gl_Const.STAGE_LV3_BOARD_SIZE, Gl_Const.STAGE_LV3_BOARD_SIZE]
     {
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
@@ -15,7 +20,6 @@ public class EnemyBoard : MonoBehaviour
     };
 
     [SerializeField] GameObject squarePrfb; //四角形prefab.
-
 
     void Start()
     {
@@ -40,19 +44,16 @@ public class EnemyBoard : MonoBehaviour
         }
     }
 
-
-
     private void BoardMake()
     {
         //ウィンドウの端の座標取得.
-        var (lb, rt) = Common.GetWorldWindowSize();
+        var (lb, rt) = Gl_Func.GetWorldWindowSize();
 
         //盤面ループ.
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-
                 //背景の生成.
                 var pos = new Vector3(lb.x + j + 0.5f, rt.y - i - 0.5f, 0);
                 var obj = Instantiate(squarePrfb, pos, Quaternion.identity);
@@ -75,7 +76,6 @@ public class EnemyBoard : MonoBehaviour
     }
     public Board[,] GetBoard()
     {
-
         return board;
     }
     void Update()

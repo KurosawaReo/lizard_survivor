@@ -1,5 +1,5 @@
+using Gloval;
 using UnityEngine;
-using Const;
 using UnityEngine.UI;
 
 enum E_PANEL
@@ -140,16 +140,16 @@ public class TitleSceneManager : MonoBehaviour
                     switch (currentBotton)
                     {
                         case E_BUTTON.FIRST:
-                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.STAGE_01);
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.STAGE_01);
                             break;
                         case E_BUTTON.SECOND:
-                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.STAGE_02);
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.STAGE_02);
                             break;
                         case E_BUTTON.THIRD:
-                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.STAGE_03);
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.STAGE_03);
                             break;
                         case E_BUTTON.ENDLESS:
-                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.END_LESS);
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.END_LESS);
                             break;
 
                     }
@@ -162,7 +162,7 @@ public class TitleSceneManager : MonoBehaviour
     }
     public void Change()
     {
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
 
     void CheckCursor(E_BUTTON max, E_CURSOR Cursor)
@@ -270,24 +270,24 @@ public class TitleSceneManager : MonoBehaviour
     public void FirstButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.FIRST);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
 
     public void SecondButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.SECOND);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
 
     public void ThirdButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.THIRD);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
 
     public void EndlessButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.ENDLESS);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
 }

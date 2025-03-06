@@ -1,4 +1,8 @@
-using Const;
+/*
+   - Square.cs -
+   Ú×•s–¾.
+*/
+using Gloval;
 using UnityEngine;
 
 public class Square : MonoBehaviour
@@ -42,7 +46,6 @@ public class Square : MonoBehaviour
                 nestObj.SetActive(true);
                 break;
         }
-
     }
 
     public void DeleteObj()
