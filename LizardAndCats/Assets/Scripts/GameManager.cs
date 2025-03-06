@@ -316,7 +316,7 @@ public class GameManager : MonoBehaviour
     {
         isPlayerWait = false;
         em.EnemiesMove();
-        if(!isGame)
+        if (!isGame)
         {
             return;
         }
@@ -333,7 +333,7 @@ public class GameManager : MonoBehaviour
             board[pos.y, pos.x].SetObject(DropObj.FOOD, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.FOOD);
         }
-        else if (rand < 13)
+        else if (rand < 23)
         {
             // Þ—¿‚ð¶¬‚·‚é
 
@@ -447,11 +447,11 @@ public class GameManager : MonoBehaviour
     {
         int cnt = 2;
 
-        for(int i = listInventory.Count - 1; i >= 0; i--)
+        for (int i = listInventory.Count - 1; i >= 0; i--)
         {
             if (listInventory[i].transform.GetChild(0).gameObject.activeSelf)
             {
-                if(cnt > 0)
+                if (cnt > 0)
                 {
                     cnt--;
                     listInventory[i].transform.GetChild(0).gameObject.SetActive(false);
@@ -462,7 +462,7 @@ public class GameManager : MonoBehaviour
 
     public void GetMaterial()
     {
-        for(int i = 0; i < listInventory.Count - 1; i++)
+        for (int i = 0; i < listInventory.Count - 1; i++)
         {
             if (!listInventory[i].transform.GetChild(0).gameObject.activeSelf)
             {
@@ -487,7 +487,7 @@ public class GameManager : MonoBehaviour
 
 
         var tmp = imgRotate.transform.rotation;
-        tmp.eulerAngles = new Vector3(0, 0, currentElapsedTurns * -(360f / (LENGTH_DAYTIME + LENGTH_NIGHT))) ;
+        tmp.eulerAngles = new Vector3(0, 0, currentElapsedTurns * -(360f / (LENGTH_DAYTIME + LENGTH_NIGHT)));
         imgRotate.transform.rotation = tmp;
 
 

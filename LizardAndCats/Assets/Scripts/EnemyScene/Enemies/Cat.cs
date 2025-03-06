@@ -37,6 +37,11 @@ public class Cat : EnemyBase
 
         var posList = GetSearchList();
 
+        if (posList.Count == 0)
+        {
+            return;
+        }
+
         // ‘ƒ‚ðŒŸ’m
         foreach (var tmpPos in posList)
         {

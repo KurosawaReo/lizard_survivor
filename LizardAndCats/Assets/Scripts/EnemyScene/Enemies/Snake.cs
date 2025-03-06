@@ -22,6 +22,10 @@ public class Snake : EnemyBase
 
         var posList = GetSearchList();
 
+        if (posList.Count == 0)
+        {
+            return;
+        }
 
         // H‚×•¨‚ğŒŸ’m
         foreach (var tmpPos in posList)
