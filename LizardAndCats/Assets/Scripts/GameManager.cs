@@ -5,10 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
-
     const int TMP_LEN = 12;
-
 
     //盤面データ.
     [Header("- 盤面情報系 -")]
@@ -92,15 +89,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("経過ターン数の表示用テキスト"), SerializeField]
     Text textResultElapsedTurn;
 
-
-
     const int LV1 = 4;
     const int LV2 = 5;
     const int LV3 = 6;
-
-
-
-
 
     void Start()
     {
@@ -108,13 +99,10 @@ public class GameManager : MonoBehaviour
 
         stageId = (StageId)PlayerPrefs.GetInt(Common.KEY_GAME_LEVEL, 0);
 
-
         lm = Instantiate(prefabPlayer).GetComponent<LizardManager>();
-
 
         BoardInit();
         BoardMake();
-
 
         // UIの初期化
         UIDisplay();
@@ -126,18 +114,11 @@ public class GameManager : MonoBehaviour
         lm.transform.localScale = ls;
         lm.transform.position = GetCellWorldPosition(lm.GetPos());
 
-
         em.Init(stageId, this, lm);
-
-
     }
-
-
 
     private void BoardInit()
     {
-
-
         switch (stageId)
         {
             case StageId.STAGE_01:
@@ -210,7 +191,6 @@ public class GameManager : MonoBehaviour
         var center = new Vector3((lb.x + rt.x) / 2, (lb.y + rt.y) / 2, 0);
         var boardTopLeft = center + new Vector3(-cellSize * (board.GetLength(0) - 1) / 2, cellSize * (board.GetLength(0) - 1) / 2, 0);
 
-
         //盤面ループ.
         for (int i = 0; i < board.GetLength(0); i++)
         {
@@ -225,6 +205,10 @@ public class GameManager : MonoBehaviour
                 var ls = obj.transform.localScale;
                 ls *= cellSize;
                 obj.transform.localScale = ls;
+
+                Debug.Log("定数調整用 cellSize:" + cellSize);
+                Debug.Log("定数調整用 localScale:" + ls);
+                Debug.Log("定数調整用 boardTopLeft:" + boardTopLeft);
 
                 //マスデータ別.
                 switch (board[i, j].GetTerrain())
@@ -266,11 +250,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Board[,] GetBoard()
+    public Board GetBoard(Vector2Int _pos)
+    {
+        return board[_pos.y, _pos.x];
+    }
+    public Board[,] GetBoardAry()
     {
         return board;
     }
-
+    public void SetBoard(Vector2Int _pos, Board _val)
+    {
+        board[_pos.y, _pos.x] = _val;
+    }
     public void SetBoardSquare(Vector2Int _pos, Board _val)
     {
         board[_pos.y, _pos.x] = _val;

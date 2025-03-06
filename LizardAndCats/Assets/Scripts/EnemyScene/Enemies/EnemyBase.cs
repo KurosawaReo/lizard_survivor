@@ -109,7 +109,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected List<Vector2Int> GetSearchList()
     {
         
-        var board = gm.GetBoard();
+        var board = gm.GetBoardAry();
         var checkList = new List<Vector2Int>();
 
         if (

@@ -58,22 +58,22 @@ namespace Const
         public const string SCENE_NAME_TITLE = "Title";
         public const string KEY_GAME_LEVEL = "Level";
 
-        public const int    BOARD_WID = 6;             //board配列の横.
-        public const int    BOARD_HEI = 6;             //board配列の縦.
-        public const float BOARD_BASE_X = 2f;         //board左上の座標x.
-        public const float BOARD_BASE_Y = 1f;         //board左上の座標y.
-        public const float BOARD_GRID_SIZE = 1.2f;    //マスを描画するサイズ.
+        public const int    BOARD_WID = 6;                  //board配列の横.
+        public const int    BOARD_HEI = 6;                  //board配列の縦.
+        public const float  BOARD_BASE_X = 3.9f;            //board左上の座標x.
+        public const float  BOARD_BASE_Y = 0.0f;            //board左上の座標y.
+        public const float  BOARD_GRID_SIZE = 1.666667f;    //マスを描画するサイズ.
 
-        public const int    LIZARD_HP_MAX = 1;         //トカゲの最大体力.
-        public const int    LIZARD_HEALGAGE_MAX = 10;  //トカゲの回復ゲージ最大.
+        public const int    LIZARD_HP_MAX = 1;              //トカゲの最大体力.
+        public const int    LIZARD_HEALGAGE_MAX = 10;       //トカゲの回復ゲージ最大.
 
-        public const float LIZARD_MOVE_ANIM_VEL = 6.0f;  //トカゲの移動アニメの速度.
-        public const float LIZARD_MOVE_ANIM_SEC = 0.15f; //トカゲの移動アニメの秒数.
+        public const float  LIZARD_MOVE_ANIM_VEL = 70.0f; //トカゲの移動アニメの速度.
+        public const float  LIZARD_MOVE_ANIM_SEC = 0.15f; //トカゲの移動アニメの秒数.
 
-        public const float OPE_MOVE_BUF_TM = 0.15f;     //移動操作バッファ時間.
-        public const float OPE_NEST_BUF_TM = 0.15f;     //巣作り操作バッファ時間.
+        public const float  OPE_MOVE_BUF_TM = 0.15f;      //移動操作バッファ時間.
+        public const float  OPE_NEST_BUF_TM = 0.15f;      //巣作り操作バッファ時間.
 
-        public const int   INVENTORY_CNT = 4;         //インベントリ個数.
+        public const int    INVENTORY_CNT = 4;            //インベントリ個数.
 
         // 汎用関数
         public static void LoadScene(string _sceneName)
@@ -104,6 +104,7 @@ namespace Const
         {
             //ウィンドウの端の座標取得.
             var (lb, rt) = GetWorldWindowSize();
+            Debug.Log("WindowX:"+lb.x+", WindowY:"+rt.y);
 
             //座標計算.
             float x = lb.x + BOARD_BASE_X + (_x + 0.5f) * BOARD_GRID_SIZE;

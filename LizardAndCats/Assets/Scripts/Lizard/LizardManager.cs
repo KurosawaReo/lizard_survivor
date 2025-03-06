@@ -1,4 +1,5 @@
 using Const;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -39,13 +40,13 @@ public class Lizard
     }
 
     //持ち物.
-    public DropObj[] inventory
+    public List<DropObj> inventory
     {
         get; set;
     }
 
     //初期化処理(コンストラクタ)
-    public Lizard(Vector2Int _pos, Direction _dir, int _hp, int _tailGage, bool _isTail, bool _isOpeAble, DropObj[] _inventory)
+    public Lizard(Vector2Int _pos, Direction _dir, int _hp, int _tailGage, bool _isTail, bool _isOpeAble, List<DropObj> _inventory)
     {
         pos = _pos;
         dir = _dir;
@@ -98,22 +99,20 @@ public class LizardOpe
 
 public class LizardManager : MonoBehaviour
 {
-    const int MAX_INVENTORY = 4;
-
     [Header("- アニメーション用 -")]
-    [Tooltip("タイマー")]
-    float timer;
-    [Tooltip("ブリンク間隔")]
-    float BLINK = 0.25f;
+    //[Tooltip("タイマー")]
+    //float timer;
+    //[Tooltip("ブリンク間隔")]
+    //float BLINK = 0.25f;
 
     [Header("- object -")]
     [SerializeField] GameObject objLizardImg; //トカゲの画像obj.
-    [SerializeField] GameManager gm;
-    [SerializeField] EnemyManager em;
 
     [Header("- script -")]
-    [SerializeField] GameObject objBrdMng;    //BoardManager.
-    BoardManager scptBrdMng;
+    GameManager gm;
+    EnemyManager em;
+    //[SerializeField] GameObject objBrdMng;    //BoardManager. ※prefabにしたことでこの方法は使えなくなった.
+    //BoardManager scptBrdMng;
 
     //トカゲの情報.
     Lizard lizard = new Lizard(
@@ -126,12 +125,7 @@ public class LizardManager : MonoBehaviour
         true,                 //isOpeAble.
 
         //inventory.
-        new DropObj[Common.INVENTORY_CNT] {
-            DropObj.NONE,
-            DropObj.NONE,
-            DropObj.NONE,
-            DropObj.NONE
-        }
+        new List<DropObj>()
     );
     //トカゲの操作情報.
     LizardOpe ope = new LizardOpe(
@@ -146,31 +140,21 @@ public class LizardManager : MonoBehaviour
     void Start()
     {
         //別script取得.
-        scptBrdMng = objBrdMng.GetComponent<BoardManager>();
-        //トカゲを初期位置に移動.
-        Common.BoardPosSet(gameObject, lizard.pos.x, lizard.pos.y, false);
-
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         em = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
+
+        //トカゲを初期位置に移動.
+        Common.BoardPosSet(gameObject, lizard.pos.x, lizard.pos.y, false);
     }
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer > BLINK)
-        {
-            timer = 0;
-            var tmp = transform.localScale;
-            tmp.x *= -1;
-            transform.localScale = tmp;
-        }
-
         //プレイヤー操作.
         //移動か巣を作るとターン消費.
         if (gm.IsPlayerInputWait() && gm.isGame)
         {
-            OpeMoveExe(); //移動操作.
-            OpeNestExe(); //巣作成操作.
+            CommandMove(); //移動操作.
+            CommandNest(); //巣作成操作.
 
             //バッファタイマー.
             ope.moveBuf = (ope.moveBuf <= 0) ? 0 : ope.moveBuf - Time.deltaTime;
@@ -183,7 +167,6 @@ public class LizardManager : MonoBehaviour
                 if (ope.moveBuf > 0)
                 {
                     OpeMoveExe();
-                    gm.PlayerTurnEnd();
                 }
                 else if (ope.nestBuf > 0)
                 {
@@ -199,7 +182,6 @@ public class LizardManager : MonoBehaviour
                 MoveAnim(); //移動アニメ.
             }
         }
-
 
         //処理.
         //MoveExe(gameObject, lizard.pos);
@@ -220,9 +202,9 @@ public class LizardManager : MonoBehaviour
     /// </summary>
     private void OpeNestExe()
     {
-        var board = scptBrdMng.GetBoard(lizard.pos);    //[取得]現在マスの情報.
+        var board = gm.GetBoard(lizard.pos);            //[取得]現在マスの情報.
         board.SetObject(DropObj.NEST, "none", 1, 0, 0); //[編集]巣にする.
-        scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
+        gm.SetBoard(lizard.pos, board);                 //[更新]board置き換え.
     }
 
     /// <summary>
@@ -232,8 +214,6 @@ public class LizardManager : MonoBehaviour
     {
         //入力があったか.
         var isInput = false;
-        //???
-        var tmp = transform.GetChild(0).transform.rotation;
 
         //上.
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -268,22 +248,30 @@ public class LizardManager : MonoBehaviour
         if (isInput)
         {
             //範囲外に出ていなければ.
-            if (ope.tmpPos.x >= 0 && ope.tmpPos.x < gm.GetBoard().GetLength(1) &&
-                ope.tmpPos.y >= 0 && ope.tmpPos.y < gm.GetBoard().GetLength(0))
+            if (ope.tmpPos.x >= 0 && ope.tmpPos.x < gm.GetBoardAry().GetLength(1) &&
+                ope.tmpPos.y >= 0 && ope.tmpPos.y < gm.GetBoardAry().GetLength(0))
             {
                 //移動先のマスの物取得.
-                var brdTer = scptBrdMng.GetBoard(ope.tmpPos).GetTerrain();
+                var brdTer = gm.GetBoard(ope.tmpPos).GetTerrain();
 
                 //障害物がなければ.
                 if (
                     brdTer != BoardTerrain.WALL
-                /* TODO:敵たちの座標 */
                 )
                 {
-                    //操作の猶予を作る.
-                    ope.moveBuf = Common.OPE_MOVE_BUF_TM;
+                    //敵がいなければ.
+                    if (em.IsNoEnemies(ope.tmpPos))
+                    {
+                        //操作の猶予を作る.
+                        ope.moveBuf = Common.OPE_MOVE_BUF_TM;
+                    }
+                    //敵がいれば移動せずダメージ.
+                    else
+                    {
+                        // プレイヤーが敵に突進したときにダメージを受けるようにする
+                        Damage();
+                    }
                 }
-
             }
         }
     }
@@ -317,8 +305,6 @@ public class LizardManager : MonoBehaviour
     //食べ物処理.
     private void EatFood()
     {
-        print("食べた");
-        //var board = scptBrdMng.GetBoard(lizard.pos); //[取得]現在マスの情報.
         var board = gm.GetBoardSquare(lizard.pos); //[取得]現在マスの情報.
 
         //尻尾回復ゲージ増加.
@@ -352,10 +338,7 @@ public class LizardManager : MonoBehaviour
         //}
         //print("ダメージ倉田");
 
-
         // 被ダメージ時にプレイヤーを赤くする
-
-
         // しっぽ切れてないとき→しっぽが切れる
         if (lizard.isTail)
         {
@@ -397,15 +380,19 @@ public class LizardManager : MonoBehaviour
         {
             case Direction.UP:
                 objLizardImg.transform.localPosition += new Vector3(0, +move, 0);
+                objLizardImg.transform.eulerAngles = new Vector3(0, 0, 0);
                 break;
             case Direction.DOWN:
                 objLizardImg.transform.localPosition += new Vector3(0, -move, 0);
+                objLizardImg.transform.eulerAngles = new Vector3(0, 0, 180);
                 break;
             case Direction.RIGHT:
                 objLizardImg.transform.localPosition += new Vector3(+move, 0, 0);
+                objLizardImg.transform.eulerAngles = new Vector3(0, 0, 270);
                 break;
             case Direction.LEFT:
                 objLizardImg.transform.localPosition += new Vector3(-move, 0, 0);
+                objLizardImg.transform.eulerAngles = new Vector3(0, 0, 90);
                 break;
         }
 
@@ -447,39 +434,30 @@ public class LizardManager : MonoBehaviour
     /// </summary>
     private void MoveAnimEnd()
     {
+        //移動先のマスの物取得.
+        var brdDrop = gm.GetBoard(lizard.pos).GetDropObj();
+        
+        //食べ物があれば.
+        if (brdDrop.type == DropObj.FOOD)
+        {
+            EatFood(); //食べる処理.
+        }
+        //素材があれば取得.
+        if (brdDrop.type == DropObj.MATERIAL)
+        {
+            GetMaterial();
+        }
+
         //操作可能に.
         lizard.isOpeAble = true;
+        //プレイヤーのターン終了.
+        gm.PlayerTurnEnd();
         //位置リセット.
         objLizardImg.transform.localPosition = Vector3.zero;
-
-        //尻尾がないなら.
-        if (!lizard.isTail)
-        {
-            //移動先のマスの物取得.
-            var brdDrop = scptBrdMng.GetBoard(lizard.pos).GetDropObj();
-            //食べ物があれば.
-            if (brdDrop.type == DropObj.FOOD)
-            {
-                EatFood(); //食べる処理.
-            }
-            //素材があれば取得.
-            if (brdDrop.type == DropObj.MATERIAL)
-            {
-                GetMaterial();
-            }
-        }
-
-        if (!em.IsNoEnemies(ope.tmpPos))
-        {
-            // プレイヤーが敵に突進したときにダメージを受けるようにする
-            Damage();
-        }
     }
 
-
-    public Vector2Int GetPos() { return lizard.pos; }
-
     public void SetPos(Vector2Int _pos) { lizard.pos = _pos; }
+    public Vector2Int GetPos() { return lizard.pos; }
 
     void GetMaterial()
     {
