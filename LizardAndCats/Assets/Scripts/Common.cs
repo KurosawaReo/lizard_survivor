@@ -50,22 +50,22 @@ namespace Const
         public const int   LIZARD_HP_MAX = 1;         //トカゲの最大体力.
         public const int   LIZARD_HEALGAGE_MAX = 10;  //トカゲの回復ゲージ最大.
 
-        public const float LIZARD_MOVE_ANIM_VEL = 5f;   //トカゲの移動アニメの速度.
-        public const float LIZARD_MOVE_ANIM_SEC = 0.2f; //トカゲの移動アニメの秒数.
+        public const float LIZARD_MOVE_ANIM_VEL = 6.0f;  //トカゲの移動アニメの速度.
+        public const float LIZARD_MOVE_ANIM_SEC = 0.15f; //トカゲの移動アニメの秒数.
 
-        public const float OPE_MOVE_BUF_TM = 0.3f;     //移動操作バッファ.
-        public const float OPE_NEST_BUF_TM = 0.3f;     //巣作り操作バッファ.
+        public const float OPE_MOVE_BUF_TM = 0.15f;     //移動操作バッファ時間.
+        public const float OPE_NEST_BUF_TM = 0.15f;     //巣作り操作バッファ時間.
 
         public const int   INVENTORY_CNT = 4;         //インベントリ個数.
 
-        // 汎用関数
+        // 汎用関数.
         public static void LoadScene(string _sceneName)
         {
             SceneManager.LoadScene(_sceneName);
         }
 
         /// <summary>
-        /// 画面の左下と右上の世界座標を返す
+        /// 画面の左下と右上の世界座標を返す.
         /// </summary>
         /// <returns></returns>
         public static (Vector3 leftBottom, Vector3 rightTop) GetWorldWindowSize()
@@ -74,6 +74,31 @@ namespace Const
             Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
 
             return (leftBottom, rightTop);
+        }
+
+        /// <summary>
+        /// board上の座標を元に、オブジェクトを配置する.
+        /// </summary>
+        /// <param name="_obj">配置するオブジェクト.</param>
+        /// <param name="_x">配置するx座標.</param>
+        /// <param name="_y">配置するy座標.</param>
+        /// <param name="_isAlignSize">グリッドにサイズを合わせるか.</param>
+        public static void BoardPosSet(GameObject _obj, int _x, int _y, bool _isAlignSize)
+        {
+            //ウィンドウの端の座標取得.
+            var (lb, rt) = GetWorldWindowSize();
+
+            //座標計算.
+            float x = lb.x + BOARD_BASE_X + (_x + 0.5f) * BOARD_GRID_SIZE;
+            float y = rt.y - BOARD_BASE_Y - (_y + 0.5f) * BOARD_GRID_SIZE;
+            //移動.
+            _obj.transform.position = new Vector2(x, y);
+
+            //サイズを合わせるなら.
+            if (_isAlignSize)
+            {
+                _obj.transform.localScale = new Vector2(BOARD_GRID_SIZE, BOARD_GRID_SIZE);
+            }
         }
     }
 }
