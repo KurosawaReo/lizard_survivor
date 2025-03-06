@@ -26,7 +26,6 @@ public class Lizard
         get; set;
     }
 
-    public int tailMax = 30;
 
     //‚¿•¨.
     //public DropObj[] inventory

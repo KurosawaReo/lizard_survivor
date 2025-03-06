@@ -65,7 +65,7 @@ public abstract class EnemyBase : MonoBehaviour
         }
         transform.rotation = tmp;
 
-
+        
 
 
         oldPos = pos;

@@ -89,6 +89,8 @@ public class GameManager : MonoBehaviour
     Image imgWin;
     [Tooltip("敗北画像"), SerializeField]
     Image imgLose;
+    [Tooltip("経過ターン数の表示用テキスト"), SerializeField]
+    Text textResultElapsedTurn;
 
 
 
@@ -314,6 +316,10 @@ public class GameManager : MonoBehaviour
     {
         isPlayerWait = false;
         em.EnemiesMove();
+        if(!isGame)
+        {
+            return;
+        }
         lm.AddTailGauge();
 
         // 材料と食べ物を生成する
@@ -327,7 +333,7 @@ public class GameManager : MonoBehaviour
             board[pos.y, pos.x].SetObject(DropObj.FOOD, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.FOOD);
         }
-        else if (rand < 6)
+        else if (rand < 13)
         {
             // 材料を生成する
 
@@ -409,17 +415,18 @@ public class GameManager : MonoBehaviour
         isGame = false;
         // リザルト表示
         imgResultPanel.gameObject.SetActive(true);
+        textResultElapsedTurn.text = "経過ターン:" + currentElapsedTurns;
         if (_isWin)
         {
             textResult.text = "勝利";
             imgWin.gameObject.SetActive(true);
-            //imgLose.gameObject.SetActive(false);
+            imgLose.gameObject.SetActive(false);
         }
         else
         {
             textResult.text = "敗北";
             imgWin.gameObject.SetActive(false);
-            //imgLose.gameObject.SetActive(true);
+            imgLose.gameObject.SetActive(true);
         }
     }
 
