@@ -48,13 +48,20 @@ public class GameManager : MonoBehaviour
     [Tooltip("現在の経過ターン数")]
     int currentElapsedTurns = 0;
     [Tooltip("昼の長さ")]
-    const int LENGTH_DAYTIME = 6;
+    const int LENGTH_DAYTIME = 3;
     [Tooltip("夜の長さ")]
-    const int LENGTH_NIGHT = 6;
+    const int LENGTH_NIGHT = 3;
     [Tooltip("終了に必要な日数")]
     int completeDays = 12;
     [Tooltip("昼かどうか")]
     public bool isDayTime = true;
+    [Tooltip("昼の画像"), SerializeField]
+    Sprite sprDayTime;
+    [Tooltip("夜の画像"), SerializeField]
+    Sprite sprNight;
+    [Tooltip("回転する画像"), SerializeField]
+    Image imgRotate;
+
     [Tooltip("現在の昼or夜を加算する変数")]
     int currentTimeZoneCount = 0;
 
@@ -73,6 +80,12 @@ public class GameManager : MonoBehaviour
     Image imgResultPanel;
     [Tooltip("勝敗の文字"), SerializeField]
     Text textResult;
+    [Tooltip("しっぽゲージ"), SerializeField]
+    Image imgTailGauge;
+    [Tooltip("しっぽアイコン"), SerializeField]
+    Image imgTailIcon;
+    [Tooltip("インベントリリスト"), SerializeField]
+    List<GameObject> listInventory;
 
 
 
@@ -98,17 +111,7 @@ public class GameManager : MonoBehaviour
 
 
         // UIの初期化
-        textElapsedTurns.text = "経過ターン:" + currentElapsedTurns;
-        textRemainingTurns.text = "終了まで後:" + (completeDays - currentElapsedTurns);
-
-        if (isDayTime)
-        {
-            imgSun.color = Color.red;
-        }
-        else
-        {
-            imgSun.color = Color.blue;
-        }
+        UIDisplay();
 
         imgResultPanel.gameObject.SetActive(false);
 
@@ -119,6 +122,7 @@ public class GameManager : MonoBehaviour
 
 
         em.Init(stageId, this, lm);
+
 
     }
 
@@ -132,7 +136,7 @@ public class GameManager : MonoBehaviour
         {
             case StageId.STAGE_01:
                 //盤面データ.
-
+                lm.SetPos(new Vector2Int());
                 board = new Board[LV1, LV1]
                 {
                     { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)},
@@ -145,6 +149,8 @@ public class GameManager : MonoBehaviour
                 completeDays = 72;
                 break;
             case StageId.STAGE_02:
+                lm.SetPos(new Vector2Int());
+
                 board = new Board[LV2, LV2]
                 {
                     { new Board(BoardTerrain.GROUND)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)   },
@@ -158,6 +164,7 @@ public class GameManager : MonoBehaviour
                 completeDays = 108;
                 break;
             case StageId.STAGE_03:
+                lm.SetPos(new Vector2Int());
                 board = new Board[LV3, LV3]
                 {
                     { new Board(BoardTerrain.GROUND)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
@@ -230,11 +237,13 @@ public class GameManager : MonoBehaviour
             {
 
                 print("タイトルに戻る");
+                BackTitle();
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
 
                 print("同じ難易度でリプレイ");
+                Replay();
             }
         }
     }
@@ -289,10 +298,11 @@ public class GameManager : MonoBehaviour
     {
         isPlayerWait = false;
         em.EnemiesMove();
+        lm.AddTailGauge();
 
         // 材料と食べ物を生成する
         var rand = Random.Range(0, 100);
-        if (rand < 5)
+        if (rand < 3)
         {
             // 食べ物を生成する
             var list = GetNoneSquares();
@@ -301,7 +311,7 @@ public class GameManager : MonoBehaviour
             board[pos.y, pos.x].SetObject(DropObj.FOOD, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.FOOD);
         }
-        else if (rand < 10)
+        else if (rand < 60)
         {
             // 材料を生成する
 
@@ -334,19 +344,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        UIDisplay();
 
 
-        textElapsedTurns.text = "経過ターン:" + currentElapsedTurns;
-        textRemainingTurns.text = "終了まで後:" + (completeDays - currentElapsedTurns);
-
-        if (isDayTime)
-        {
-            imgSun.color = Color.red;
-        }
-        else
-        {
-            imgSun.color = Color.blue;
-        }
 
         if (currentElapsedTurns >= completeDays)
         {
@@ -407,10 +407,74 @@ public class GameManager : MonoBehaviour
     public void Replay()
     {
         print("リプレイ");
+        Common.LoadScene("EnemyMove");
     }
 
     public void BackTitle()
     {
+        Common.LoadScene("TitleScene");
         print("止める");
+    }
+
+    public void ConsumeMaterial()
+    {
+        int cnt = 2;
+
+        for(int i = listInventory.Count - 1; i >= 0; i--)
+        {
+            if (listInventory[i].transform.GetChild(0).gameObject.activeSelf)
+            {
+                if(cnt > 0)
+                {
+                    cnt--;
+                    listInventory[i].transform.GetChild(0).gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public void GetMaterial()
+    {
+        for(int i = 0; i < listInventory.Count - 1; i++)
+        {
+            if (!listInventory[i].transform.GetChild(0).gameObject.activeSelf)
+            {
+                listInventory[i].transform.GetChild(0).gameObject.SetActive(true);
+                return;
+            }
+        }
+    }
+
+
+    void UIDisplay()
+    {
+        imgTailGauge.fillAmount = lm.GetNormalizedTailGaugeAMount();
+        if (lm.IsTail())
+        {
+            imgTailIcon.color = Color.white;
+        }
+        else
+        {
+            imgTailIcon.color = Color.gray;
+        }
+
+
+        var tmp = imgRotate.transform.rotation;
+        tmp.eulerAngles = new Vector3(0, 0, currentElapsedTurns * -(360f / (LENGTH_DAYTIME + LENGTH_NIGHT))) ;
+        imgRotate.transform.rotation = tmp;
+
+
+
+        textElapsedTurns.text = "経過ターン:" + currentElapsedTurns;
+        textRemainingTurns.text = "終了まで後:" + (completeDays - currentElapsedTurns);
+
+        if (isDayTime)
+        {
+            imgSun.sprite = sprDayTime;
+        }
+        else
+        {
+            imgSun.sprite = sprNight;
+        }
     }
 }

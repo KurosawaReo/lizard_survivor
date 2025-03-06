@@ -42,23 +42,32 @@ public abstract class EnemyBase : MonoBehaviour
     {
         //print($"移動前の配列座標:[{pos.y},{pos.x}]");
 
-        oldPos = pos;
-
+        var tmp = transform.rotation;
         switch (_vec)
         {
             case MoveVec.UP:
                 pos -= Vector2Int.up;
+                tmp.eulerAngles = new Vector3(0, 0, 0);
                 break;
             case MoveVec.DOWN:
                 pos -= Vector2Int.down;
+                tmp.eulerAngles = new Vector3(0, 0, 180);
                 break;
             case MoveVec.RIGHT:
                 pos += Vector2Int.right;
+                tmp.eulerAngles = new Vector3(0, 0, 270);
                 break;
             case MoveVec.LEFT:
                 pos += Vector2Int.left;
+                tmp.eulerAngles = new Vector3(0, 0, 90);
                 break;
         }
+        transform.rotation = tmp;
+
+
+
+
+        oldPos = pos;
 
         SetPosition();
         print($"移動後の配列座標:[{pos.y},{pos.x}]");
@@ -81,7 +90,15 @@ public abstract class EnemyBase : MonoBehaviour
     abstract public void NightMode();
     virtual public void DayMode()
     {
-
+        if (dayActiveTimer < 0)
+        {
+            NightMode();
+            dayActiveTimer = frequency;
+        }
+        else
+        {
+            dayActiveTimer--;
+        }
     }
 
     /// <summary>
@@ -97,7 +114,7 @@ public abstract class EnemyBase : MonoBehaviour
         if (
             pos.y != 0 &&
             em.IsNoEnemies(new Vector2Int(pos.x, pos.y - 1)) &&
-            gm.GetBoardSquare(pos).GetTerrain() != BoardTerrain.WALL
+            gm.GetBoardSquare(new Vector2Int(pos.x, pos.y - 1)).GetTerrain() != BoardTerrain.WALL
             )
         {
             checkList.Add(new Vector2Int(pos.x, pos.y - 1));
@@ -105,18 +122,22 @@ public abstract class EnemyBase : MonoBehaviour
         if (
             pos.y != board.GetLength(0) - 1 &&
             em.IsNoEnemies(new Vector2Int(pos.x, pos.y + 1)) && 
-            gm.GetBoardSquare(pos).GetTerrain() != BoardTerrain.WALL
+            gm.GetBoardSquare(new Vector2Int(pos.x, pos.y + 1)).GetTerrain() != BoardTerrain.WALL
             )
         {
             checkList.Add(new Vector2Int(pos.x, pos.y + 1));
         }
-        if (pos.x != 0 && em.IsNoEnemies(new Vector2Int(pos.x - 1, pos.y)) && 
-            gm.GetBoardSquare(pos).GetTerrain() != BoardTerrain.WALL
+        if (pos.x != 0 &&
+            em.IsNoEnemies(new Vector2Int(pos.x - 1, pos.y)) && 
+            gm.GetBoardSquare(new Vector2Int(pos.x - 1, pos.y)).GetTerrain() != BoardTerrain.WALL
             )
         {
             checkList.Add(new Vector2Int(pos.x - 1, pos.y));
         }
-        if (pos.x != board.GetLength(1) - 1 && em.IsNoEnemies(new Vector2Int(pos.x + 1, pos.y)) && gm.GetBoardSquare(pos).GetTerrain() != BoardTerrain.WALL)
+        if (pos.x != board.GetLength(1) - 1 &&
+            em.IsNoEnemies(new Vector2Int(pos.x + 1, pos.y)) &&
+            gm.GetBoardSquare(new Vector2Int(pos.x + 1, pos.y)).GetTerrain() != BoardTerrain.WALL
+            )
         {
             checkList.Add(new Vector2Int(pos.x + 1, pos.y));
         }

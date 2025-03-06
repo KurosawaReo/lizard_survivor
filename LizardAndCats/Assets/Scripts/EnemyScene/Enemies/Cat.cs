@@ -6,6 +6,20 @@ using Const;
 
 public class Cat : EnemyBase
 {
+    public override void DayMode()
+    {
+        if(dayActiveTimer < 0)
+        {
+            NightMode();
+            dayActiveTimer = frequency;
+        }
+        else
+        {
+            dayActiveTimer--;
+        }
+    }
+
+
 
     public override void NightMode()
     {

@@ -74,6 +74,18 @@ public class EnemyManager : MonoBehaviour
                 obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
                 obj.Init(new Vector2Int(3, 3), this, gm.cellSize);
                 enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(7, 7), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(6, 5), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(1, 7), this, gm.cellSize);
+                enemies.Add(obj);
                 break;
             case StageId.END_LESS:
                 break;

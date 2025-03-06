@@ -27,6 +27,9 @@ public class Lizard
     {
         get; set;
     }
+
+    public int tailMax = 30;
+
     //持ち物.
     //public DropObj[] inventory
     public List<DropObj> inventory
@@ -48,6 +51,13 @@ public class Lizard
 public class LizardManager : MonoBehaviour
 {
     const int MAX_INVENTORY = 4;
+
+
+    [Header("- アニメーション用 -")]
+    [Tooltip("タイマー")]
+    float timer;
+    [Tooltip("ブリンク間隔")]
+    float BLINK = 0.25f;
 
 
     [Header("- script -")]
@@ -86,7 +96,14 @@ public class LizardManager : MonoBehaviour
 
     void Update()
     {
-
+        timer += Time.deltaTime;
+        if (timer > BLINK)
+        {
+            timer = 0;
+            var tmp = transform.localScale;
+            tmp.x *= -1;
+            transform.localScale = tmp;
+        }
 
         //操作.
         //CommandMove();
@@ -113,29 +130,37 @@ public class LizardManager : MonoBehaviour
         var ret = false;
         Vector2Int tmpPos = lizard.pos; //仮変更用にコピー.
         var isInput = false;
+        var tmp = transform.GetChild(0).transform.rotation;
 
         //上.
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             tmpPos -= Vector2Int.up;
+
+            tmp.eulerAngles = new Vector3(0, 0, 0);
             isInput = true;
         }
         //下.
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             tmpPos -= Vector2Int.down;
+            tmp.eulerAngles = new Vector3(0, 0, 180);
+
             isInput = true;
         }
         //左.
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             tmpPos += Vector2Int.left;
+            tmp.eulerAngles = new Vector3(0, 0, 90);
+
             isInput = true;
         }
         //右.
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             tmpPos += Vector2Int.right;
+            tmp.eulerAngles = new Vector3(0, 0, 270);
             isInput = true;
         }
 
@@ -157,6 +182,7 @@ public class LizardManager : MonoBehaviour
             {
                 //移動実行.
                 lizard.pos = tmpPos;
+                transform.rotation = tmp;
                 transform.position = gm.GetCellWorldPosition(lizard.pos);
                 if (isInput)
                 {
@@ -169,6 +195,8 @@ public class LizardManager : MonoBehaviour
                 {
                     EatFood(); //食べる処理.
                 }
+
+
 
                 //素材があれば取得
                 if (brdObj.type == DropObj.MATERIAL)
@@ -192,13 +220,15 @@ public class LizardManager : MonoBehaviour
 
     void GetMaterial()
     {
-        if (lizard.inventory.Count < 4)
+        if (lizard.inventory.Count < Common.INVENTORY_CNT)
         {
             lizard.inventory.Add(DropObj.MATERIAL);
+            gm.GetMaterial();
         }
         var b = gm.GetBoardSquare(lizard.pos);
         b.SetObject(DropObj.NONE, "", 0, 0, 0);
         gm.SetBoardSquare(lizard.pos, b);
+
     }
 
 
@@ -209,16 +239,20 @@ public class LizardManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // todo:材料を消費したら処理続行
+            if(lizard.inventory.Count >= 2)
+            {
+                lizard.inventory.RemoveAt(0);
+                lizard.inventory.RemoveAt(0);
 
+                gm.ConsumeMaterial();
 
-
-
-            //var board = scptBrdMng.GetBoard(lizard.pos);    //[取得]現在マスの情報.
-            var board = gm.GetBoardSquare(lizard.pos);    //[取得]現在マスの情報.
-            board.SetObject(DropObj.NEST, "none", 1, 0, 0); //[編集]巣にする.
-            //scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
-            gm.SetBoardSquare(lizard.pos, board);         //[更新]board置き換え.
-            return true;
+                //var board = scptBrdMng.GetBoard(lizard.pos);    //[取得]現在マスの情報.
+                var board = gm.GetBoardSquare(lizard.pos);    //[取得]現在マスの情報.
+                board.SetObject(DropObj.NEST, "none", 1, 0, 0); //[編集]巣にする.
+                                                                //scptBrdMng.SetBoard(lizard.pos, board);         //[更新]board置き換え.
+                gm.SetBoardSquare(lizard.pos, board);         //[更新]board置き換え.
+                return true;
+            }
         }
         return false;
     }
@@ -231,12 +265,16 @@ public class LizardManager : MonoBehaviour
         var board = gm.GetBoardSquare(lizard.pos); //[取得]現在マスの情報.
 
         //尻尾回復ゲージ増加.
-        lizard.tailGage += board.GetDropObj().heal;
-        //ゲージが最大になったら
-        if (lizard.tailGage >= Common.LIZARD_HEALGAGE_MAX)
+        //lizard.tailGage += board.GetDropObj().heal;
+        if (!lizard.isTail)
         {
-            lizard.tailGage = 0;
-            lizard.isTail = true; //尻尾復活.
+            lizard.tailGage += 5;
+            //ゲージが最大になったら
+            if (lizard.tailGage >= Common.LIZARD_HEALGAGE_MAX)
+            {
+                lizard.tailGage = 0;
+                lizard.isTail = true; //尻尾復活.
+            }
         }
 
         //食べ物を消す.
@@ -290,4 +328,31 @@ public class LizardManager : MonoBehaviour
 
 
     public Vector2Int GetPos() { return lizard.pos; }
+
+    public void SetPos(Vector2Int _pos) { lizard.pos = _pos; }
+
+    public float GetNormalizedTailGaugeAMount()
+    {
+        var val = lizard.tailGage;
+        var max = Common.LIZARD_HEALGAGE_MAX;
+
+        var norm = (float)val / (float)max;
+
+        return norm;
+    }
+
+    public void AddTailGauge()
+    {
+        if (!lizard.isTail)
+        {
+            lizard.tailGage += 1;
+            if (lizard.tailGage >= Common.LIZARD_HEALGAGE_MAX)
+            {
+                lizard.tailGage = 0;
+                lizard.isTail = true; //尻尾復活.
+            }
+        }
+    }
+
+    public bool IsTail() { return lizard.isTail; }
 }
