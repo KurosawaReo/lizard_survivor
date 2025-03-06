@@ -140,7 +140,7 @@ public class LizardManager : MonoBehaviour
             isInput = true;
         }
         //â∫.
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             tmpPos -= Vector2Int.down;
             tmp.eulerAngles = new Vector3(0, 0, 180);
@@ -148,7 +148,7 @@ public class LizardManager : MonoBehaviour
             isInput = true;
         }
         //ç∂.
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             tmpPos += Vector2Int.left;
             tmp.eulerAngles = new Vector3(0, 0, 90);
@@ -156,7 +156,7 @@ public class LizardManager : MonoBehaviour
             isInput = true;
         }
         //âE.
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             tmpPos += Vector2Int.right;
             tmp.eulerAngles = new Vector3(0, 0, 270);
