@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("四角形prefab.マスオブジェクト"), SerializeField]
     GameObject squarePrfb;
     [Tooltip("盤面情報")]
-    Board[,] board = new Board[TMP_LEN, TMP_LEN];
+    Board[,] board;
     [Tooltip("盤面のインスタンス")]
     Square[,] boardInst = new Square[TMP_LEN, TMP_LEN];
     [Tooltip("セルサイズ")]
@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("現在の経過ターン数")]
     int currentElapsedTurns = 0;
     [Tooltip("昼の長さ")]
-    const int LENGTH_DAYTIME = 3;
+    const int LENGTH_DAYTIME = 2;
     [Tooltip("夜の長さ")]
-    const int LENGTH_NIGHT = 3;
+    const int LENGTH_NIGHT = 2;
     [Tooltip("終了に必要な日数")]
     int completeDays = 12;
     [Tooltip("昼かどうか")]
@@ -85,12 +85,16 @@ public class GameManager : MonoBehaviour
     Image imgTailIcon;
     [Tooltip("インベントリリスト"), SerializeField]
     List<GameObject> listInventory;
+    [Tooltip("勝利画像"), SerializeField]
+    Image imgWin;
+    [Tooltip("敗北画像"), SerializeField]
+    Image imgLose;
 
 
 
-    const int LV1 = 5;
-    const int LV2 = 6;
-    const int LV3 = 8;
+    const int LV1 = 4;
+    const int LV2 = 5;
+    const int LV3 = 6;
 
 
 
@@ -98,7 +102,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        stageId = StageId.STAGE_03;
+        //todo:エンドレスモード
+        stageId = StageId.END_LESS;
 
 
 
@@ -138,11 +143,11 @@ public class GameManager : MonoBehaviour
                 lm.SetPos(new Vector2Int());
                 board = new Board[LV1, LV1]
                 {
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)},
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)},
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)},
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND)*/},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND)*/},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND)*/},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND)*/},
+                    //{ new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)},
                 };
                 boardInst = new Square[LV1, LV1];
                 completeDays = 72;
@@ -152,12 +157,12 @@ public class GameManager : MonoBehaviour
 
                 board = new Board[LV2, LV2]
                 {
-                    { new Board(BoardTerrain.GROUND)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)   },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)   },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND) },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND) },
+                    //{ new Board(BoardTerrain.GROUND)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)   },
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND)   */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND) */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*,   new Board(BoardTerrain.GROUND) */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND) */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND) */},
                 };
                 boardInst = new Square[LV2, LV2];
                 completeDays = 108;
@@ -166,19 +171,31 @@ public class GameManager : MonoBehaviour
                 lm.SetPos(new Vector2Int());
                 board = new Board[LV3, LV3]
                 {
-                    { new Board(BoardTerrain.GROUND)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
-                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
+                    //{ new Board(BoardTerrain.GROUND)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
+                    //{ new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    },
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)*/},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
                 };
                 boardInst = new Square[LV3, LV3];
                 completeDays = 144;
                 break;
             case StageId.END_LESS:
+                lm.SetPos(new Vector2Int());
+                board = new Board[LV3, LV3]
+                {
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)*/},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                    { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND),   new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)/*, new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND)    */},
+                };
+                boardInst = new Square[LV3, LV3];
+                completeDays = int.MaxValue;
                 break;
         }
     }
@@ -310,7 +327,7 @@ public class GameManager : MonoBehaviour
             board[pos.y, pos.x].SetObject(DropObj.FOOD, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.FOOD);
         }
-        else if (rand < 60)
+        else if (rand < 6)
         {
             // 材料を生成する
 
@@ -395,10 +412,14 @@ public class GameManager : MonoBehaviour
         if (_isWin)
         {
             textResult.text = "勝利";
+            imgWin.gameObject.SetActive(true);
+            //imgLose.gameObject.SetActive(false);
         }
         else
         {
             textResult.text = "敗北";
+            imgWin.gameObject.SetActive(false);
+            //imgLose.gameObject.SetActive(true);
         }
     }
 

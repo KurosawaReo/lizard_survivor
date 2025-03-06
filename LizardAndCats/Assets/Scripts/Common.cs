@@ -57,7 +57,7 @@ namespace Const
         public const float BOARD_GRID_SIZE = 1.2f;   //マスを描画するサイズ.
 
         public const int   LIZARD_LIFE_MAX = 1;      //トカゲの最大体力.
-        public const int   LIZARD_HEALGAGE_MAX = 10; //トカゲの回復ゲージ最大.
+        public const int   LIZARD_HEALGAGE_MAX = 20; //トカゲの回復ゲージ最大.
 
         public const int   INVENTORY_CNT = 4;        //インベントリ個数.
 

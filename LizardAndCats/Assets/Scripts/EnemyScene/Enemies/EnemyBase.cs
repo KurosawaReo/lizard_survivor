@@ -1,6 +1,7 @@
 using UnityEngine;
 using Const;
 using System.Collections.Generic;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public abstract class EnemyBase : MonoBehaviour
 {
@@ -150,12 +151,38 @@ public abstract class EnemyBase : MonoBehaviour
         return pos;
     }
 
-    virtual protected void Attack()
+    virtual protected void Attack(MoveVec _vec)
     {
+        var tmp = transform.rotation;
+
+        switch (_vec)
+        {
+            case MoveVec.UP:
+                tmp.eulerAngles = new Vector3(0, 0, 0);
+                break;
+            case MoveVec.DOWN:
+                tmp.eulerAngles = new Vector3(0, 0, 180);
+                break;
+            case MoveVec.RIGHT:
+                tmp.eulerAngles = new Vector3(0, 0, 270);
+                break;
+            case MoveVec.LEFT:
+                tmp.eulerAngles = new Vector3(0, 0, 90);
+                break;
+        }
+        transform.rotation = tmp;
+
         fatigueCount += fatigueAmount;
 
         // ÉvÉåÉCÉÑÅ[Ç…çUåÇ
         em.EnemyAttack();
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+        Invoke("ColorReset", 2f);
+    }
+
+    void ColorReset()
+    {
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     protected void EatFood(Vector2Int _pos)

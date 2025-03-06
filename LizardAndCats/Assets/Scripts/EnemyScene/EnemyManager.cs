@@ -26,7 +26,7 @@ public class EnemyManager : MonoBehaviour
 
 
         //ステージごとに初期化処理を変更する
-        switch(_stageId)
+        switch (_stageId)
         {
             case StageId.STAGE_01:
                 EnemyBase obj = null;
@@ -42,7 +42,7 @@ public class EnemyManager : MonoBehaviour
                 //obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
                 //obj.Init(new Vector2Int(4, 1), this, gm.cellSize);
                 //enemies.Add(obj);
-                
+
 
                 break;
             case StageId.STAGE_02:
@@ -54,9 +54,11 @@ public class EnemyManager : MonoBehaviour
                 obj.Init(new Vector2Int(4, 1), this, gm.cellSize);
                 enemies.Add(obj);
                 obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
-                obj.Init(new Vector2Int(5, 3), this, gm.cellSize);
+                obj.Init(new Vector2Int(4, 3), this, gm.cellSize);
                 enemies.Add(obj);
                 break;
+
+
             case StageId.STAGE_03:
                 obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
                 obj.Init(new Vector2Int(1, 4), this, gm.cellSize);
@@ -70,22 +72,48 @@ public class EnemyManager : MonoBehaviour
                 enemies.Add(obj);
 
                 obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(3, 0), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(0, 3), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(3,3), this, gm.cellSize);
+                enemies.Add(obj);
+
+                //obj = Instantiate(prefabSnake).GetComponent<EnemyBase>();
+                //obj.Init(new Vector2Int(1, 7), this, gm.cellSize);
+                //enemies.Add(obj);
+                break;
+            case StageId.END_LESS:
+                obj = Instantiate(prefabSnake).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(1, 4), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabCat).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(4, 1), this, gm.cellSize);
+                enemies.Add(obj);
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(5, 3), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(3, 0), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(0, 3), this, gm.cellSize);
+                enemies.Add(obj);
+
+                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
                 obj.Init(new Vector2Int(3, 3), this, gm.cellSize);
                 enemies.Add(obj);
 
-                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
-                obj.Init(new Vector2Int(7, 7), this, gm.cellSize);
+                obj = Instantiate(prefabSnake).GetComponent<EnemyBase>();
+                obj.Init(new Vector2Int(5, 5), this, gm.cellSize);
                 enemies.Add(obj);
-
-                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
-                obj.Init(new Vector2Int(6, 5), this, gm.cellSize);
-                enemies.Add(obj);
-
-                obj = Instantiate(prefabFox).GetComponent<EnemyBase>();
-                obj.Init(new Vector2Int(1, 7), this, gm.cellSize);
-                enemies.Add(obj);
-                break;
-            case StageId.END_LESS:
                 break;
         }
     }
@@ -99,13 +127,15 @@ public class EnemyManager : MonoBehaviour
 
         for (int i = 0; i < enemies.Count; i++)
         {
-            if(gm.isDayTime)
+            if (gm.isDayTime)
             {
                 //enemies[i].NightMode();
             }
             else
             {
+
                 enemies[i].NightMode();
+
             }
         }
     }
@@ -113,7 +143,7 @@ public class EnemyManager : MonoBehaviour
 
     public bool IsNoEnemies(Vector2Int _pos)
     {
-        for(int i = 0;i < enemies.Count;i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             if (enemies[i].GetPos() == _pos)
             {

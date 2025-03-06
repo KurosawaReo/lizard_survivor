@@ -9,14 +9,18 @@ public class Fox : EnemyBase
 {
 
 
+
     public override void NightMode()
     {
         //疲労してたら疲労回復してスキップ
         if (fatigueCount > 0)
         {
             fatigueCount--;
+            transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+
             return;
         }
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
 
 
 
@@ -58,7 +62,7 @@ public class Fox : EnemyBase
 
         if (newPos != ERROR_VEC)
         {
-            Attack();
+            Attack(Common.GetMoveVec(newPos - pos));
             return;
         }
 
@@ -109,23 +113,22 @@ public class Fox : EnemyBase
         posList.Remove(oldPos);
 
         // ランダム移動時のみ二回行動
-        for (int i = 0; i < 2; i++)
+
+        // 袋小路を考慮してエラー処理
+        if (posList.Count > 0)
         {
-            // 袋小路を考慮してエラー処理
-            if (posList.Count > 0)
-            {
-                var index = Random.Range(0, posList.Count);
-                newPos = posList[index];
-                Move(Common.GetMoveVec(newPos - pos));
-                return;
-            }
-            else
-            {
-                newPos = oldPos;
-                Move(Common.GetMoveVec(newPos - pos));
-                return;
-            }
+            var index = Random.Range(0, posList.Count);
+            newPos = posList[index];
+            Move(Common.GetMoveVec(newPos - pos));
+            return;
         }
+        else
+        {
+            newPos = oldPos;
+            Move(Common.GetMoveVec(newPos - pos));
+            return;
+        }
+
 
 
     }

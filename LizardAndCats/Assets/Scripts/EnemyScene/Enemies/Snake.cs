@@ -10,8 +10,12 @@ public class Snake : EnemyBase
         if (fatigueCount > 0)
         {
             fatigueCount--;
+            transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+
+
             return;
         }
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
 
 
         var newPos = ERROR_VEC;

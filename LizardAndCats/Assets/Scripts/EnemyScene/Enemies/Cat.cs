@@ -26,8 +26,11 @@ public class Cat : EnemyBase
         if (fatigueCount > 0)
         {
             fatigueCount--;
+
+            transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
             return;
         }
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
 
 
         var newPos = ERROR_VEC;
@@ -62,7 +65,7 @@ public class Cat : EnemyBase
 
         if (newPos != ERROR_VEC)
         {
-            Attack();
+            Attack(Common.GetMoveVec(newPos - pos));
             return;
         }
 

@@ -130,6 +130,8 @@ public class LizardManager : MonoBehaviour
         var isInput = false;
         var tmp = transform.GetChild(0).transform.rotation;
 
+
+
         //上.
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -174,17 +176,31 @@ public class LizardManager : MonoBehaviour
 
             //障害物がなければ.
             if (
-                brdTer != BoardTerrain.WALL &&
-                em.IsNoEnemies(tmpPos)
+                brdTer != BoardTerrain.WALL
             )
             {
+
+                if (em.IsNoEnemies(tmpPos))
+                {
+                    lizard.pos = tmpPos;
+                    transform.rotation = tmp;
+                    transform.position = gm.GetCellWorldPosition(lizard.pos);
+                }
+                else
+                {
+                    // プレイヤーが敵に突進したときにダメージを受けるようにする
+                    Damage();
+                }
+
+
+
                 //移動実行.
-                lizard.pos = tmpPos;
-                transform.rotation = tmp;
-                transform.position = gm.GetCellWorldPosition(lizard.pos);
+
                 if (isInput)
                 {
                     ret = true;
+
+                    
                 }
 
 
@@ -236,7 +252,7 @@ public class LizardManager : MonoBehaviour
         //スペースを押したら.
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            // todo:材料を消費したら処理続行
+            // 材料を消費したら処理続行
             if(lizard.inventory.Count >= 2)
             {
                 lizard.inventory.RemoveAt(0);
@@ -291,7 +307,11 @@ public class LizardManager : MonoBehaviour
         //{
         //    LizardDeath();
         //}
-        print("ダメージ倉田");
+        //print("ダメージ倉田");
+
+
+        // 被ダメージ時にプレイヤーを赤くする
+
 
         // しっぽ切れてないとき→しっぽが切れる
         if (lizard.isTail)
