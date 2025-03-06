@@ -105,6 +105,9 @@ public class SoundManager : MonoBehaviour
         }
 
         if(bgmSource.clip == bgmClip && bgmSource.isPlaying)
+        {
+            return;
+        }
 
         //BGM‚Ìƒ‹[ƒvÄ¶
         bgmSource.clip = bgmClip;
