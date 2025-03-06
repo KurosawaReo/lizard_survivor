@@ -425,7 +425,7 @@ public class GameManager : MonoBehaviour
     public void Replay()
     {
         print("ƒŠƒvƒŒƒC");
-        Common.LoadScene("EnemyMove");
+        Common.LoadScene("GameScene");
     }
 
     public void BackTitle()
@@ -453,7 +453,7 @@ public class GameManager : MonoBehaviour
 
     public void GetMaterial()
     {
-        for (int i = 0; i < listInventory.Count - 1; i++)
+        for (int i = 0; i < listInventory.Count; i++)
         {
             if (!listInventory[i].transform.GetChild(0).gameObject.activeSelf)
             {

@@ -223,21 +223,21 @@ public class LizardManager : MonoBehaviour
             isInput = true;
         }
         //â∫.
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             ope.tmpPos = lizard.pos - Vector2Int.down;
             ope.tmpDir = Direction.DOWN;
             isInput = true;
         }
         //ç∂.
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             ope.tmpPos = lizard.pos + Vector2Int.left;
             ope.tmpDir = Direction.LEFT;
             isInput = true;
         }
         //âE.
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             ope.tmpPos = lizard.pos + Vector2Int.right;
             ope.tmpDir = Direction.RIGHT;
