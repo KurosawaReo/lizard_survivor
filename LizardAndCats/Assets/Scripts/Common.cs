@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,8 +12,8 @@ namespace Const
     //地形情報.
     public enum BoardTerrain
     {
+        GROUND,   //床.
         WALL,    //壁.
-        GROUND   //床.
     };
     //落ちてる物情報.
     public enum DropObj
@@ -27,6 +25,26 @@ namespace Const
         TAIL      //尻尾.
     };
 
+    /// <summary>
+    /// 移動方向
+    /// </summary>
+    public enum MoveVec
+    {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT,
+    }
+
+
+    public enum StageId
+    {
+        STAGE_01,
+        STAGE_02,
+        STAGE_03,
+
+        END_LESS,
+    }
     public class Common
     {
         // 定数
@@ -39,7 +57,7 @@ namespace Const
         public const float BOARD_GRID_SIZE = 1.2f;   //マスを描画するサイズ.
 
         public const int   LIZARD_LIFE_MAX = 1;      //トカゲの最大体力.
-        public const int   LIZARD_HEALGAGE_MAX = 10; //トカゲの回復ゲージ最大.
+        public const int   LIZARD_HEALGAGE_MAX = 20; //トカゲの回復ゲージ最大.
 
         public const int   INVENTORY_CNT = 4;        //インベントリ個数.
 
@@ -59,6 +77,27 @@ namespace Const
             Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
 
             return (leftBottom, rightTop);
+        }
+
+
+        public static MoveVec GetMoveVec(Vector2Int _vec)
+        {
+            if (_vec == Vector2Int.down)
+            {
+                return MoveVec.UP;
+            }
+            else if (_vec == Vector2Int.left)
+            {
+                return MoveVec.LEFT;
+            }
+            else if (_vec == Vector2Int.right)
+            {
+                return MoveVec.RIGHT;
+            }
+            else
+            {
+                return MoveVec.DOWN;
+            }
         }
     }
 }
