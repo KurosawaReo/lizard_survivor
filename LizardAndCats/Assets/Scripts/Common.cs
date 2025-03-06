@@ -48,6 +48,10 @@ namespace Const
     public class Common
     {
         // ’è”
+        public const string KEY_GAME_LEVEL = "Level";
+
+
+
         public const string SCENE_NAME_TITLE = "Title";
 
         public const int   BOARD_WID = 6;            //board”z—ñ‚Ì‰¡.

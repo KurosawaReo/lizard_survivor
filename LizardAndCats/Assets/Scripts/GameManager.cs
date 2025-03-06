@@ -102,9 +102,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        //todo:エンドレスモード
-        stageId = StageId.END_LESS;
+        //stageId = StageId.END_LESS;
 
+        stageId = (StageId)PlayerPrefs.GetInt(Common.KEY_GAME_LEVEL, 0);
 
 
         lm = Instantiate(prefabPlayer).GetComponent<LizardManager>();

@@ -642,7 +642,7 @@ MonoBehaviour:
   - {fileID: 1468343806}
   - {fileID: 1277741556}
   - {fileID: 28668066}
-  stageName: 
+  stageName: EnemyMove
   fadeAnimator: {fileID: 1317734337}
 --- !u!1 &470664192
 GameObject:

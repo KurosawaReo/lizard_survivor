@@ -1,13 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Const;
-using System;
-using static UnityEngine.ParticleSystem;
-using UnityEngine.UIElements;
 using UnityEngine.UI;
-using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 
 enum E_PANEL
 { 
@@ -128,7 +121,7 @@ public class TitleSceneManager : MonoBehaviour
 
     void ButtonEnter()
     {
-        if (Input.GetKeyDown(KeyCode.Return) == true)
+        if (Input.GetKeyDown(KeyCode.Space)/* == true*/)
         {
             switch (currentBotton)
             {
@@ -139,13 +132,30 @@ public class TitleSceneManager : MonoBehaviour
                 case E_BUTTON.STAGE:
                     StageButtonOn();
                     break;
+                case E_BUTTON.FIRST:
 
                 default:
                     Debug.Log(currentBotton);
                     fadeAnimator.SetTrigger("FadeIn");
-                    PlayerPrefs.SetInt("STAGE", (int)currentBotton);
+                    switch (currentBotton)
+                    {
+                        case E_BUTTON.FIRST:
+                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.STAGE_01);
+                            break;
+                        case E_BUTTON.SECOND:
+                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.STAGE_02);
+                            break;
+                        case E_BUTTON.THIRD:
+                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.STAGE_03);
+                            break;
+                        case E_BUTTON.ENDLESS:
+                            PlayerPrefs.SetInt(Common.KEY_GAME_LEVEL, (int)StageId.END_LESS);
+                            break;
+
+                    }
                     //PlayerPrefs.SetInt("STAGE", (int)currentBotton);
-                    //Common.LoadScene(stageName);
+                    //PlayerPrefs.SetInt("STAGE", (int)currentBotton);
+                    Change();
                     break;
             };
         }
