@@ -12,8 +12,8 @@ namespace Const
     //地形情報.
     public enum BoardTerrain
     {
-        GROUND,   //床.
         WALL,    //壁.
+        GROUND   //床.
     };
     //落ちてる物情報.
     public enum DropObj
@@ -24,6 +24,14 @@ namespace Const
         MATERIAL, //素材.
         TAIL      //尻尾.
     };
+    //4方向.
+    public enum Direction
+    {
+        UP,    //上
+        RIGHT, //右.
+        DOWN,  //下.
+        LEFT,  //左.
+    }
 
     /// <summary>
     /// 移動方向
@@ -35,8 +43,6 @@ namespace Const
         RIGHT,
         LEFT,
     }
-
-
     public enum StageId
     {
         STAGE_01,
@@ -45,25 +51,29 @@ namespace Const
 
         END_LESS,
     }
+
     public class Common
     {
         // 定数
+        public const string SCENE_NAME_TITLE = "Title";
         public const string KEY_GAME_LEVEL = "Level";
 
+        public const int    BOARD_WID = 6;             //board配列の横.
+        public const int    BOARD_HEI = 6;             //board配列の縦.
+        public const float BOARD_BASE_X = 2f;         //board左上の座標x.
+        public const float BOARD_BASE_Y = 1f;         //board左上の座標y.
+        public const float BOARD_GRID_SIZE = 1.2f;    //マスを描画するサイズ.
 
+        public const int    LIZARD_HP_MAX = 1;         //トカゲの最大体力.
+        public const int    LIZARD_HEALGAGE_MAX = 10;  //トカゲの回復ゲージ最大.
 
-        public const string SCENE_NAME_TITLE = "Title";
+        public const float LIZARD_MOVE_ANIM_VEL = 6.0f;  //トカゲの移動アニメの速度.
+        public const float LIZARD_MOVE_ANIM_SEC = 0.15f; //トカゲの移動アニメの秒数.
 
-        public const int   BOARD_WID = 6;            //board配列の横.
-        public const int   BOARD_HEI = 6;            //board配列の縦.
-        public const float BOARD_BASE_X = 2f;        //board左上の座標x.
-        public const float BOARD_BASE_Y = 1f;        //board左上の座標y.
-        public const float BOARD_GRID_SIZE = 1.2f;   //マスを描画するサイズ.
+        public const float OPE_MOVE_BUF_TM = 0.15f;     //移動操作バッファ時間.
+        public const float OPE_NEST_BUF_TM = 0.15f;     //巣作り操作バッファ時間.
 
-        public const int   LIZARD_LIFE_MAX = 1;      //トカゲの最大体力.
-        public const int   LIZARD_HEALGAGE_MAX = 20; //トカゲの回復ゲージ最大.
-
-        public const int   INVENTORY_CNT = 4;        //インベントリ個数.
+        public const int   INVENTORY_CNT = 4;         //インベントリ個数.
 
         // 汎用関数
         public static void LoadScene(string _sceneName)
@@ -83,6 +93,30 @@ namespace Const
             return (leftBottom, rightTop);
         }
 
+        /// <summary>
+        /// board上の座標を元に、オブジェクトを配置する.
+        /// </summary>
+        /// <param name="_obj">配置するオブジェクト.</param>
+        /// <param name="_x">配置するx座標.</param>
+        /// <param name="_y">配置するy座標.</param>
+        /// <param name="_isAlignSize">グリッドにサイズを合わせるか.</param>
+        public static void BoardPosSet(GameObject _obj, int _x, int _y, bool _isAlignSize)
+        {
+            //ウィンドウの端の座標取得.
+            var (lb, rt) = GetWorldWindowSize();
+
+            //座標計算.
+            float x = lb.x + BOARD_BASE_X + (_x + 0.5f) * BOARD_GRID_SIZE;
+            float y = rt.y - BOARD_BASE_Y - (_y + 0.5f) * BOARD_GRID_SIZE;
+            //移動.
+            _obj.transform.position = new Vector2(x, y);
+
+            //サイズを合わせるなら.
+            if (_isAlignSize)
+            {
+                _obj.transform.localScale = new Vector2(BOARD_GRID_SIZE, BOARD_GRID_SIZE);
+            }
+        }
 
         public static MoveVec GetMoveVec(Vector2Int _vec)
         {

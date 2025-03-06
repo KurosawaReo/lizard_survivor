@@ -62,12 +62,12 @@ public class BoardManager : MonoBehaviour
     private void BoardInit()
     {
         //食べ物の設置(仮)
-        board[1, 1].SetObject(DropObj.FOOD, "foodA", 0, 3, 0);
-        board[1, 2].SetObject(DropObj.FOOD, "foodB", 0, 3, 0);
-        board[1, 3].SetObject(DropObj.FOOD, "foodC", 0, 3, 0);
-        board[1, 4].SetObject(DropObj.NEST, "foodC", 0, 3, 0);
-        board[1, 5].SetObject(DropObj.MATERIAL, "foodC", 0, 3, 0);
-        board[2, 3].SetObject(DropObj.TAIL, "foodC", 0, 3, 0);
+        //board[1, 1].SetObject(DropObj.FOOD, "foodA", 0, 3, 0);
+        //board[1, 2].SetObject(DropObj.FOOD, "foodB", 0, 3, 0);
+        //board[1, 3].SetObject(DropObj.FOOD, "foodC", 0, 3, 0);
+        //board[1, 4].SetObject(DropObj.NEST, "foodC", 0, 3, 0);
+        //board[1, 5].SetObject(DropObj.MATERIAL, "foodC", 0, 3, 0);
+        //board[2, 3].SetObject(DropObj.TAIL, "foodC", 0, 3, 0);
 
         /*
         //盤面ループ.
@@ -89,7 +89,7 @@ public class BoardManager : MonoBehaviour
 
                 //prefabの生成.
                 var ter = Instantiate(prfbSquare, prfbSquareIn.transform);
-                BoardPosSet(ter, j, i);
+                Common.BoardPosSet(ter, j, i, true);
 
                 //boardの地形別.
                 switch (board[i, j].GetTerrain())
@@ -119,38 +119,22 @@ public class BoardManager : MonoBehaviour
                         break;
                     case DropObj.NEST: //巣.
                         var nest = Instantiate(prfbNest, prfbDropObjIn.transform);
-                        BoardPosSet(nest, j, i);
+                        Common.BoardPosSet(nest, j, i, false);
                         break;
                     case DropObj.FOOD: //食べ物.
                         var food = Instantiate(prfbFood, prfbDropObjIn.transform);
-                        BoardPosSet(food, j, i);
+                        Common.BoardPosSet(food, j, i, false);
                         break;
                     case DropObj.MATERIAL: //素材.
                         var material = Instantiate(prfbMaterial, prfbDropObjIn.transform);
-                        BoardPosSet(material, j, i);
+                        Common.BoardPosSet(material, j, i, false);
                         break;
                     case DropObj.TAIL: //尻尾.
                         var tail = Instantiate(prfbTail, prfbDropObjIn.transform);
-                        BoardPosSet(tail, j, i);
+                        Common.BoardPosSet(tail, j, i, false);
                         break;
                 }
             }
         }
-    }
-
-    //board座標を元に位置設定.
-    private void BoardPosSet(GameObject _obj, int _x, int _y)
-    {
-        //ウィンドウの端の座標取得.
-        var (lb, rt) = Common.GetWorldWindowSize();
-
-        //座標の計算.
-        float x = lb.x + Common.BOARD_BASE_X + (_x + 0.5f) * Common.BOARD_GRID_SIZE;
-        float y = rt.y - Common.BOARD_BASE_Y - (_y + 0.5f) * Common.BOARD_GRID_SIZE;
-        var pos = new Vector3(x, y, 0);
-
-        //位置設定.
-        _obj.transform.position = pos;
-        _obj.transform.localScale = new Vector3(Common.BOARD_GRID_SIZE, Common.BOARD_GRID_SIZE, 0);
     }
 }
