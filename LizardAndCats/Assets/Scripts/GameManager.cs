@@ -434,7 +434,7 @@ public class GameManager : MonoBehaviour
     public void Replay()
     {
         print("ƒŠƒvƒŒƒC");
-        Common.LoadScene("EnemyMove");
+        Common.LoadScene("GameScene");
     }
 
     public void BackTitle()

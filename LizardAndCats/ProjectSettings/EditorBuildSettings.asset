@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScene.unity
     guid: 96a63e757a9e5a441bc762a03376ec3f
   - enabled: 1
-    path: Assets/Scenes/EnemyMove.unity
+    path: Assets/Scenes/GameScene.unity
     guid: a137f36afd73bbe489a3d0a4fa8c19b4
   m_configObjects: {}
