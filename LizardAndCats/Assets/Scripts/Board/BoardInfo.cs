@@ -38,7 +38,7 @@ public class Board
     //地形情報.
     BoardTerrain terrain;
     //落下物情報.
-    BoardDropObj dropObj = new BoardDropObj(DropObj.NONE, "none", 0, 0, 0);
+    BoardDropObj dropObj = new BoardDropObj(DropObj.NONE, "", 0, 0, 0);
 
     //初期化処理(コンストラクタ)
     public Board(BoardTerrain _terrain)

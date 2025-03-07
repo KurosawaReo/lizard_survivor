@@ -20,7 +20,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] GameObject prfbNest;      //‘ƒprefab.
     [SerializeField] GameObject prfbFood;      //H‚×•¨prefab.
     [SerializeField] GameObject prfbMaterial;  //‘fŞprefab.
-    [SerializeField] GameObject prfbTail;      //K”öprefab.
+    //[SerializeField] GameObject prfbTail;      //K”öprefab.
     [SerializeField] GameObject prfbDropObjIn; //prefab‚ğ“ü‚ê‚éêŠ.
 
     //  [SerializeField] Sprite lizardImg;
@@ -127,10 +127,10 @@ public class BoardManager : MonoBehaviour
                         var material = Instantiate(prfbMaterial, prfbDropObjIn.transform);
                         Gl_Func.BoardPosSet(material, j, i, board.GetLength(0), false);
                         break;
-                    case DropObj.TAIL: //K”ö.
-                        var tail = Instantiate(prfbTail, prfbDropObjIn.transform);
-                        Gl_Func.BoardPosSet(tail, j, i, board.GetLength(0), false);
-                        break;
+                    //case DropObj.TAIL: //K”ö.
+                    //    var tail = Instantiate(prfbTail, prfbDropObjIn.transform);
+                    //    Gl_Func.BoardPosSet(tail, j, i, board.GetLength(0), false);
+                    //    break;
                 }
             }
         }

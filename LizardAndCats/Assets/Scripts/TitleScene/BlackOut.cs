@@ -1,15 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BlackOut : MonoBehaviour
 {
-    public void FadeOut()
+    TitleSceneManager scptTitleMng; //TitleSceneManager.
+
+    void Start()
     {
-        GameObject.Find("TitleManager").GetComponent<TitleSceneManager>().StageButtonOn2();
+        var obj = GameObject.Find("TitleManager");
+        scptTitleMng = obj.GetComponent<TitleSceneManager>();
     }
+
     public void SceneChange()
     {
-        GameObject.Find("TitleManager").GetComponent<TitleSceneManager>().Change();
+        scptTitleMng.Change();
+    }
+    public void FadeOut()
+    {
+        scptTitleMng.StageButtonOn2();
+    }
+    public void FadeOutEnd()
+    {
+        scptTitleMng.SetIsTitleAnim(false); //アニメーションは終わったという指示.
     }
 }

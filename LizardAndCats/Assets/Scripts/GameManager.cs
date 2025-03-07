@@ -295,9 +295,13 @@ public class GameManager : MonoBehaviour
         return isPlayerWait;
     }
 
+    /// <summary>
+    /// プレイヤーターンが終了した時に呼び出される.
+    /// </summary>
     public void PlayerTurnEnd()
     {
-        isPlayerWait = false;
+        isPlayerWait = false; //待機終了.
+
         em.EnemiesMove();
         if (!isGame)
         {
@@ -305,9 +309,10 @@ public class GameManager : MonoBehaviour
         }
         lm.AddTailGauge();
 
-        // 材料と食べ物を生成する
+        //確率抽選.
         var rand = Random.Range(0, 100);
-        if (rand < 3)
+        //一定確率で食べ物か素材を生成する.
+        if (rand < Gl_Const.RAND_GENERATE_FOOD)
         {
             // 食べ物を生成する
             var list = GetNoneSquares();
@@ -316,10 +321,9 @@ public class GameManager : MonoBehaviour
             board[pos.y, pos.x].SetObject(DropObj.FOOD, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.FOOD);
         }
-        else if (rand < 23)
+        else if (rand < Gl_Const.RAND_GENERATE_MATERIAL)
         {
             // 材料を生成する
-
             var list = GetNoneSquares();
             rand = Random.Range(0, list.Count);
             var pos = list[rand];
@@ -354,12 +358,13 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        isPlayerWait = true;
+        isPlayerWait = true; //待機再開.
     }
 
     public List<Vector2Int> GetNoneSquares()
     {
         var ret = new List<Vector2Int>();
+
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
@@ -445,7 +450,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //UI表示(更新)
+    /// <summary>
+    /// UIの表示と更新.
+    /// </summary>
     public void UIDisplay()
     {
         imgTailGauge.fillAmount = lm.GetNormalizedTailGaugeAMount();

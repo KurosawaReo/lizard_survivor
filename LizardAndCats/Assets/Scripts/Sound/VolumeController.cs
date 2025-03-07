@@ -3,14 +3,17 @@ using UnityEngine.UI;
 
 public class VolumeController : MonoBehaviour
 {
-    public GameObject settingsPanel; // 設定パネル
-    public Slider bgmSlider; // BGM音量調整スライダー
-    public Slider seSlider;  // SE音量調整スライダー
-    public float slideSpeed = 10f; // スライド速度
+    [SerializeField] GameObject objBlackOut;   // 薄暗くする用
+    [Space]
+    [SerializeField] GameObject settingsPanel; // 設定パネル
+    [SerializeField] Slider bgmSlider;         // BGM音量調整スライダー
+    [SerializeField] Slider seSlider;          // SE音量調整スライダー
+    [SerializeField] float slideSpeed = 10f;   // スライド速度
+    [SerializeField] float slidePosY  = 75;    // スライドで出てくる高さ
 
-    private bool isSettingsOpen = false; // 設定パネルの状態
-    private Vector2 hiddenPosition; // 非表示位置（画面上部）
-    private Vector2 visiblePosition; // 表示位置（画面中央）
+    private bool isSettingsOpen = false;       // 設定パネルの状態
+    private Vector2 hiddenPosition;            // 非表示位置（画面上部）
+    private Vector2 visiblePosition;           // 表示位置（画面中央）
 
     private RectTransform panelRect;
 
@@ -19,10 +22,10 @@ public class VolumeController : MonoBehaviour
         panelRect = settingsPanel.GetComponent<RectTransform>();
 
         // 設定パネルを画面外（上）に配置
-        hiddenPosition = new Vector2(0, Screen.height); // 画面上部外に配置
-        visiblePosition = new Vector2(0, 80); // 画面内に移動
+        hiddenPosition  = new Vector2(0, Screen.height); // 画面上部外に配置
+        visiblePosition = new Vector2(0, slidePosY);     // 画面内に移動
 
-        panelRect.anchoredPosition = hiddenPosition; // 初期状態でパネルを非表示
+        panelRect.anchoredPosition = hiddenPosition;     // 初期状態でパネルを非表示
 
         // スライダーの初期値をSoundManagerの現在の音量に設定
         if (SoundManager.Instance != null)
@@ -44,14 +47,17 @@ public class VolumeController : MonoBehaviour
             ToggleSettings();
         }
 
-        // パネルのスライド
+        // パネルの位置設定
+        // 目標地点までスライドさせる
         if (isSettingsOpen)
         {
             panelRect.anchoredPosition = Vector2.Lerp(panelRect.anchoredPosition, visiblePosition, Time.deltaTime * slideSpeed);
+            objBlackOut.GetComponent<Animator>().SetBool("isSetting", true);
         }
         else
         {
             panelRect.anchoredPosition = Vector2.Lerp(panelRect.anchoredPosition, hiddenPosition, Time.deltaTime * slideSpeed);
+            objBlackOut.GetComponent<Animator>().SetBool("isSetting", false);
         }
     }
 

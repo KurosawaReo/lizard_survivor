@@ -2,7 +2,6 @@
    - Common.cs -
    グローバルで使う定数や関数をまとめた所.
 */
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -31,7 +30,6 @@ namespace Gloval
         NEST,     //巣.
         FOOD,     //食べ物.
         MATERIAL, //素材.
-        TAIL      //尻尾.
     };
 
     /// <summary>
@@ -51,9 +49,9 @@ namespace Gloval
     public enum MoveDir
     {
         UP,    //上
-        RIGHT, //右.
         DOWN,  //下.
         LEFT,  //左.
+        RIGHT, //右.
 
         INVALID, //無効.
     }
@@ -69,6 +67,10 @@ namespace Gloval
         public const int   STAGE_LV1_BOARD_SIZE = 4;     //Lv1での盤面サイズ.
         public const int   STAGE_LV2_BOARD_SIZE = 5;     //Lv2での盤面サイズ.
         public const int   STAGE_LV3_BOARD_SIZE = 6;     //Lv3での盤面サイズ.
+
+        public const int   RAND_GENERATE_FOOD = 3;       //行動するごとに食べ物が生成される確率(%).
+        public const int   RAND_GENERATE_MATERIAL = 23;  //行動するごとに素材が生成される確率(%).
+        public const int   GENERATE_NEST_NEED_CNT = 2;   //巣を作るのに必要な素材数.
 
         public const int   LIZARD_HP_MAX = 1;            //トカゲの最大体力.
         public const int   LIZARD_HEALGAUGE_MAX = 10;    //トカゲの回復ゲージ最大.
