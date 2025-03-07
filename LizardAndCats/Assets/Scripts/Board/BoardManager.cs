@@ -1,13 +1,11 @@
 /*
    - BoardGenerator.cs -
-   黒澤ver.
+   仮で作ったもの.
+   おそらくGameManagerとして生まれ変わったため
+   ここはもう使われていない.
 */
-using System.Collections;
-using System.Collections.Generic;
+using Gloval;
 using UnityEngine;
-
-//ヘッダのような使い方.
-using Const;
 
 /// <summary>
 /// 盤面生成のプログラム.
@@ -22,14 +20,14 @@ public class BoardManager : MonoBehaviour
     [SerializeField] GameObject prfbNest;      //巣prefab.
     [SerializeField] GameObject prfbFood;      //食べ物prefab.
     [SerializeField] GameObject prfbMaterial;  //素材prefab.
-    [SerializeField] GameObject prfbTail;      //尻尾prefab.
+    //[SerializeField] GameObject prfbTail;      //尻尾prefab.
     [SerializeField] GameObject prfbDropObjIn; //prefabを入れる場所.
 
     //  [SerializeField] Sprite lizardImg;
     //  [SerializeField] Sprite catImg;
 
     //盤面データ.
-    Board[,] board = new Board[Common.BOARD_HEI, Common.BOARD_WID] //Board[y, x]
+    Board[,] board = new Board[Gl_Const.STAGE_LV3_BOARD_SIZE, Gl_Const.STAGE_LV3_BOARD_SIZE] //Board[y, x]
     {
         { new Board(BoardTerrain.WALL)  , new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL)   },
         { new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.GROUND), new Board(BoardTerrain.WALL)   },
@@ -62,12 +60,12 @@ public class BoardManager : MonoBehaviour
     private void BoardInit()
     {
         //食べ物の設置(仮)
-        board[1, 1].SetObject(DropObj.FOOD, "foodA", 0, 3, 0);
-        board[1, 2].SetObject(DropObj.FOOD, "foodB", 0, 3, 0);
-        board[1, 3].SetObject(DropObj.FOOD, "foodC", 0, 3, 0);
-        board[1, 4].SetObject(DropObj.NEST, "foodC", 0, 3, 0);
-        board[1, 5].SetObject(DropObj.MATERIAL, "foodC", 0, 3, 0);
-        board[2, 3].SetObject(DropObj.TAIL, "foodC", 0, 3, 0);
+        //board[1, 1].SetObject(DropObj.FOOD, "foodA", 0, 3, 0);
+        //board[1, 2].SetObject(DropObj.FOOD, "foodB", 0, 3, 0);
+        //board[1, 3].SetObject(DropObj.FOOD, "foodC", 0, 3, 0);
+        //board[1, 4].SetObject(DropObj.NEST, "foodC", 0, 3, 0);
+        //board[1, 5].SetObject(DropObj.MATERIAL, "foodC", 0, 3, 0);
+        //board[2, 3].SetObject(DropObj.TAIL, "foodC", 0, 3, 0);
 
         /*
         //盤面ループ.
@@ -89,7 +87,7 @@ public class BoardManager : MonoBehaviour
 
                 //prefabの生成.
                 var ter = Instantiate(prfbSquare, prfbSquareIn.transform);
-                BoardPosSet(ter, j, i);
+                Gl_Func.BoardPosSet(ter, j, i, board.GetLength(0), true);
 
                 //boardの地形別.
                 switch (board[i, j].GetTerrain())
@@ -112,45 +110,29 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-                //boardの落ちてる物別.
+                //boardの落下物別.
                 switch (board[i, j].GetDropObj().type)
                 {
                     case DropObj.NONE: //無し.
                         break;
                     case DropObj.NEST: //巣.
                         var nest = Instantiate(prfbNest, prfbDropObjIn.transform);
-                        BoardPosSet(nest, j, i);
+                        Gl_Func.BoardPosSet(nest, j, i, board.GetLength(0), false);
                         break;
                     case DropObj.FOOD: //食べ物.
                         var food = Instantiate(prfbFood, prfbDropObjIn.transform);
-                        BoardPosSet(food, j, i);
+                        Gl_Func.BoardPosSet(food, j, i, board.GetLength(0), false);
                         break;
                     case DropObj.MATERIAL: //素材.
                         var material = Instantiate(prfbMaterial, prfbDropObjIn.transform);
-                        BoardPosSet(material, j, i);
+                        Gl_Func.BoardPosSet(material, j, i, board.GetLength(0), false);
                         break;
-                    case DropObj.TAIL: //尻尾.
-                        var tail = Instantiate(prfbTail, prfbDropObjIn.transform);
-                        BoardPosSet(tail, j, i);
-                        break;
+                    //case DropObj.TAIL: //尻尾.
+                    //    var tail = Instantiate(prfbTail, prfbDropObjIn.transform);
+                    //    Gl_Func.BoardPosSet(tail, j, i, board.GetLength(0), false);
+                    //    break;
                 }
             }
         }
-    }
-
-    //board座標を元に位置設定.
-    private void BoardPosSet(GameObject _obj, int _x, int _y)
-    {
-        //ウィンドウの端の座標取得.
-        var (lb, rt) = Common.GetWorldWindowSize();
-
-        //座標の計算.
-        float x = lb.x + Common.BOARD_BASE_X + (_x + 0.5f) * Common.BOARD_GRID_SIZE;
-        float y = rt.y - Common.BOARD_BASE_Y - (_y + 0.5f) * Common.BOARD_GRID_SIZE;
-        var pos = new Vector3(x, y, 0);
-
-        //位置設定.
-        _obj.transform.position = pos;
-        _obj.transform.localScale = new Vector3(Common.BOARD_GRID_SIZE, Common.BOARD_GRID_SIZE, 0);
     }
 }

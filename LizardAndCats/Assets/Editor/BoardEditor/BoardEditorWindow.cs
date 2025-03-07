@@ -1,9 +1,9 @@
+using Gloval;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using Const;
 
 public class BoardEditorWindow : EditorWindow
 {

@@ -1,27 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BlackOut : MonoBehaviour
 {
-    // Start is called before the first frame update
+    TitleSceneManager scptTitleMng; //TitleSceneManager.
+
     void Start()
     {
-
+        var obj = GameObject.Find("TitleManager");
+        scptTitleMng = obj.GetComponent<TitleSceneManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void FadeOut()
-    {
-        GameObject.Find("Manager").GetComponent<TitleSceneManager>().StageButtonOn2();
-    }
     public void SceneChange()
     {
-        GameObject.Find("Manager").GetComponent<TitleSceneManager>().Change();
+        scptTitleMng.Change();
+    }
+    public void FadeOut()
+    {
+        scptTitleMng.StageButtonOn2();
+    }
+    public void FadeOutEnd()
+    {
+        scptTitleMng.SetIsTitleAnim(false); //アニメーションは終わったという指示.
     }
 }

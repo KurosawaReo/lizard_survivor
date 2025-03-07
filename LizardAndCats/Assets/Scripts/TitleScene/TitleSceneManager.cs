@@ -1,19 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using Gloval;
 using UnityEngine;
-using Const;
-using System;
-using static UnityEngine.ParticleSystem;
-using UnityEngine.UIElements;
 using UnityEngine.UI;
-using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 
 enum E_PANEL
 { 
     TITLE,
-    STAAGE1,
-    STAAGE2,
+    STAGE1,
+    STAGE2,
 }
 
 enum E_BUTTON
@@ -51,10 +44,16 @@ public class TitleSceneManager : MonoBehaviour
     Animator fadeAnimator;
 
     E_BUTTON currentBottonMemo;
-
     E_BUTTON currentBotton;
+    E_PANEL  onPanel;
 
-    E_PANEL onPanel;
+    //タイトルのアニメーション中かどうか.
+    bool isTitleAnim = false;
+    //他のscriptで呼び出す用(セッター)
+    public void SetIsTitleAnim(bool _bool)
+    {
+        isTitleAnim = _bool;
+    }
 
     void Init()
     {
@@ -101,72 +100,15 @@ public class TitleSceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ButtonMove();
-        ButtonEnter();
-        ButtonOutline();
+        //タイトルのアニメーション中は動かさない.
+        if(!isTitleAnim)
+        {
+            ButtonMove();
+            ButtonSpace();
+            ButtonOutline();
+        }
 
         Debug.Log(currentBotton);
-    }
-
-    void ButtonOutline()
-    {
-        if(currentBottonMemo != currentBotton)
-        {
-            buttonObj[(int)currentBottonMemo].GetComponent<Outline>().enabled = false;
-            buttonObj[(int)currentBotton].GetComponent<Outline>().enabled = true;
-            currentBottonMemo = currentBotton;
-        }
-
-#if false
-            for(int i = 0; i < buttonObj.Length; i++)
-        {
-            buttonObj[i].GetComponent<Outline>().enabled = false;
-        }
-        buttonObj[(int)currentBotton].GetComponent<Outline>().enabled = true;
-#endif
-    }
-
-    void ButtonEnter()
-    {
-        if (Input.GetKeyDown(KeyCode.Return) == true)
-        {
-            switch (currentBotton)
-            {
-                case E_BUTTON.START:
-                    StartButtonOn();
-                    break;
-
-                case E_BUTTON.STAGE:
-                    StageButtonOn();
-                    break;
-
-                default:
-                    Debug.Log(currentBotton);
-                    fadeAnimator.SetTrigger("FadeIn");
-                    PlayerPrefs.SetInt("STAGE", (int)currentBotton);
-                    //PlayerPrefs.SetInt("STAGE", (int)currentBotton);
-                    //Common.LoadScene(stageName);
-                    break;
-            };
-        }
-    }
-    public void Change()
-    {
-        Common.LoadScene(stageName);
-    }
-
-    void CheckCursor(E_BUTTON max, E_CURSOR Cursor)
-    {
-        if((Cursor == E_CURSOR.UP)||(Cursor == E_CURSOR.LEFT))
-        {
-            if (currentBotton <= max) return;
-            currentBotton -= 1;
-        }
-        else
-        {
-            if (currentBotton >= max) return;
-            currentBotton += 1;
-        }
     }
 
     private void ButtonMove()
@@ -191,12 +133,12 @@ public class TitleSceneManager : MonoBehaviour
             //        currentBotton -= 1;
             //    }
             //    break;
-            case E_PANEL.STAAGE1:
-            case E_PANEL.STAAGE2:
+            case E_PANEL.STAGE1:
+            case E_PANEL.STAGE2:
                 //上ボタンが押されたなら　-1
                 if ((Input.GetKeyDown(KeyCode.UpArrow) == true) || (Input.GetKeyDown(KeyCode.W) == true))
                 {
-                    if(onPanel == E_PANEL.STAAGE1)
+                    if(onPanel == E_PANEL.STAGE1)
                     {
                         CheckCursor(E_BUTTON.STAGE, E_CURSOR.UP);
                     }
@@ -209,7 +151,7 @@ public class TitleSceneManager : MonoBehaviour
                 //下ボタンが押されたなら　+1
                 else if ((Input.GetKeyDown(KeyCode.DownArrow) == true) || (Input.GetKeyDown(KeyCode.S) == true))
                 {
-                    if (onPanel == E_PANEL.STAAGE1)
+                    if (onPanel == E_PANEL.STAGE1)
                     {
                         CheckCursor(E_BUTTON.ENDLESS, E_CURSOR.DOWN);
                     }
@@ -221,63 +163,135 @@ public class TitleSceneManager : MonoBehaviour
                 break;
         }
     }
+    private void ButtonSpace()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)/* == true*/)
+        {
+            switch (currentBotton)
+            {
+                case E_BUTTON.START:
+                    StartButtonOn();
+                    break;
 
+                case E_BUTTON.STAGE:
+                    StageButtonOn();
+                    break;
+                case E_BUTTON.FIRST:
+
+                default:
+                    Debug.Log(currentBotton);
+                    fadeAnimator.SetTrigger("FadeIn");
+                    switch (currentBotton)
+                    {
+                        case E_BUTTON.FIRST:
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.STAGE_01);
+                            break;
+                        case E_BUTTON.SECOND:
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.STAGE_02);
+                            break;
+                        case E_BUTTON.THIRD:
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.STAGE_03);
+                            break;
+                        case E_BUTTON.ENDLESS:
+                            PlayerPrefs.SetInt(Gl_Const.KEY_GAME_LEVEL, (int)StageId.END_LESS);
+                            break;
+
+                    }
+                    //PlayerPrefs.SetInt("STAGE", (int)currentBotton);
+                    //PlayerPrefs.SetInt("STAGE", (int)currentBotton);
+                    Change();
+                    break;
+            };
+        }
+    }
+    private void ButtonOutline()
+    {
+        if(currentBottonMemo != currentBotton)
+        {
+            buttonObj[(int)currentBottonMemo].GetComponent<Outline>().enabled = false;
+            buttonObj[(int)currentBotton].GetComponent<Outline>().enabled = true;
+            currentBottonMemo = currentBotton;
+        }
+
+#if false
+            for(int i = 0; i < buttonObj.Length; i++)
+        {
+            buttonObj[i].GetComponent<Outline>().enabled = false;
+        }
+        buttonObj[(int)currentBotton].GetComponent<Outline>().enabled = true;
+#endif
+    }
+    public void Change()
+    {
+        Gl_Func.LoadScene(stageName);
+    }
+
+    void CheckCursor(E_BUTTON max, E_CURSOR Cursor)
+    {
+        if((Cursor == E_CURSOR.UP)||(Cursor == E_CURSOR.LEFT))
+        {
+            if (currentBotton <= max) return;
+            currentBotton -= 1;
+        }
+        else
+        {
+            if (currentBotton >= max) return;
+            currentBotton += 1;
+        }
+    }
+
+    //スタートボタンが押されたら…
+    public void StartButtonOn()
+    {
+        //Debug.Log("StartButtonOn");
+        
+        //選択状況をファーストに
+        currentBotton = E_BUTTON.STAGE;
+        onPanel = E_PANEL.STAGE1;
+        fadeAnimator.SetTrigger("StartButton");
+
+        isTitleAnim = true; //アニメーション中である指示.
+
+        //アニメーションのOnButtonにtrueを入れ込む
+        //parentButtons.GetComponent<Animator>().SetInteger("nButton", (int)onButton);
+    }
+    //ステージのボタンが押されたら…
+    public void StageButtonOn()
+    {
+        currentBotton = E_BUTTON.FIRST;
+        onPanel = E_PANEL.STAGE2;
+        fadeAnimator.SetTrigger("BlackOut2");
+
+        isTitleAnim = true; //アニメーション中である指示.
+
+        //parentButtons.GetComponent<Animator>().SetInteger("onButton", (int)onButton);
+    }
     public void StageButtonOn2()
     {
         panel[(int)onPanel - 1].SetActive(false);
         panel[(int)onPanel].SetActive(true);
     }
 
-    public void StageButtonOn()
-    {
-        currentBotton = E_BUTTON.FIRST;
-        onPanel = E_PANEL.STAAGE2;
-        fadeAnimator.SetTrigger("BlackOut2");
-
-        //parentButtons.GetComponent<Animator>().SetInteger("onButton", (int)onButton);
-    }
-
-    public void StartButtonOn2()
-    {
-        
-        panel[(int)onPanel - 1].SetActive(false);
-        panel[(int)onPanel].SetActive(true);
-    }
-
-    //スタートボタンが押されたら…
-    public void StartButtonOn()
-    {
-        Debug.Log("StartButtonOn");
-        //選択状況をファーストに
-        currentBotton = E_BUTTON.STAGE;
-        onPanel = E_PANEL.STAAGE1;
-        fadeAnimator.SetTrigger("StartButton");
-
-        //アニメーションのOnButtonにtrueを入れ込む
-        //parentButtons.GetComponent<Animator>().SetInteger("nButton", (int)onButton);
-    }
-
+#if false
     public void FirstButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.FIRST);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
-
     public void SecondButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.SECOND);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
-
     public void ThirdButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.THIRD);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
-
     public void EndlessButtonOn()
     {
         PlayerPrefs.SetInt("STAGE", (int)E_BUTTON.ENDLESS);
-        Common.LoadScene(stageName);
+        Gl_Func.LoadScene(stageName);
     }
+#endif
 }

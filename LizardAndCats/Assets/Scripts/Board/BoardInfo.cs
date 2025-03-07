@@ -1,15 +1,15 @@
 /*
    - BoardInfo.cs -
-   黒澤ver.
+   board配列データ用のクラス.
+   
+   ・Terrain: 地形情報.
+   ・DropObj: 落下物情報.
 */
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-using Const;
+using Gloval;
 
 /// <summary>
-/// 配列で、落ちてる物情報を管理するための型.
+/// 配列で、落下物情報を管理するための型.
 /// </summary>
 public class BoardDropObj
 {
@@ -37,8 +37,8 @@ public class Board
 {
     //地形情報.
     BoardTerrain terrain;
-    //落ちてる物情報.
-    BoardDropObj dropObj = new BoardDropObj(DropObj.NONE, "none", 0, 0, 0);
+    //落下物情報.
+    BoardDropObj dropObj = new BoardDropObj(DropObj.NONE, "", 0, 0, 0);
 
     //初期化処理(コンストラクタ)
     public Board(BoardTerrain _terrain)

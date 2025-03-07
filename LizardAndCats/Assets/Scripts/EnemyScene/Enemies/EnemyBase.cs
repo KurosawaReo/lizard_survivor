@@ -1,11 +1,13 @@
+/*
+   - EnemyBase.cs -
+   敵のベースプログラム(継承用)
+*/
+using Gloval;
 using UnityEngine;
-using Const;
 using System.Collections.Generic;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public abstract class EnemyBase : MonoBehaviour
 {
-
     [Tooltip("移動用初期値")]
     protected readonly Vector2Int ERROR_VEC = new Vector2Int(-1, -1);
     [Tooltip("疲労ゲージ.fatigueCount>0なら疲労状態")]
@@ -24,8 +26,6 @@ public abstract class EnemyBase : MonoBehaviour
     EnemyManager em;
     protected GameManager gm;
 
-
-
     virtual public void Init(Vector2Int _pos, EnemyManager _em, float _lScale)
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -39,39 +39,36 @@ public abstract class EnemyBase : MonoBehaviour
         SetPosition();
     }
 
-    virtual public void Move(MoveVec _vec)
+    virtual public void Move(MoveDir _dir)
     {
         //print($"移動前の配列座標:[{pos.y},{pos.x}]");
 
         var tmp = transform.rotation;
-        switch (_vec)
+        switch (_dir)
         {
-            case MoveVec.UP:
+            case MoveDir.UP:
                 pos -= Vector2Int.up;
                 tmp.eulerAngles = new Vector3(0, 0, 0);
                 break;
-            case MoveVec.DOWN:
+            case MoveDir.DOWN:
                 pos -= Vector2Int.down;
                 tmp.eulerAngles = new Vector3(0, 0, 180);
                 break;
-            case MoveVec.RIGHT:
+            case MoveDir.RIGHT:
                 pos += Vector2Int.right;
                 tmp.eulerAngles = new Vector3(0, 0, 270);
                 break;
-            case MoveVec.LEFT:
+            case MoveDir.LEFT:
                 pos += Vector2Int.left;
                 tmp.eulerAngles = new Vector3(0, 0, 90);
                 break;
         }
         transform.rotation = tmp;
 
-
-
-
         oldPos = pos;
 
         SetPosition();
-        print($"移動後の配列座標:[{pos.y},{pos.x}]");
+        //print($"移動後の配列座標:[{pos.y},{pos.x}]");
         if (gm.GetPlayerPos() == pos)
         {
             //print("プレイヤーに重なった");
@@ -80,7 +77,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected void SetPosition()
     {
-        var (lb, rt) = Common.GetWorldWindowSize();
+        var (lb, rt) = Gl_Func.GetWorldWindowSize();
         //var tmpPos = new Vector3(lb.x + pos.x + 0.5f, rt.y - pos.y - 0.5f, 0);
         var tmpPos = gm.GetCellWorldPosition(pos);
 
@@ -109,7 +106,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected List<Vector2Int> GetSearchList()
     {
         
-        var board = gm.GetBoard();
+        var board = gm.GetBoardAry();
         var checkList = new List<Vector2Int>();
 
         if (
@@ -145,28 +142,27 @@ public abstract class EnemyBase : MonoBehaviour
         return checkList;
     }
 
-
     public Vector2Int GetPos()
     {
         return pos;
     }
 
-    virtual protected void Attack(MoveVec _vec)
+    virtual protected void Attack(MoveDir _dir)
     {
         var tmp = transform.rotation;
 
-        switch (_vec)
+        switch (_dir)
         {
-            case MoveVec.UP:
+            case MoveDir.UP:
                 tmp.eulerAngles = new Vector3(0, 0, 0);
                 break;
-            case MoveVec.DOWN:
+            case MoveDir.DOWN:
                 tmp.eulerAngles = new Vector3(0, 0, 180);
                 break;
-            case MoveVec.RIGHT:
+            case MoveDir.RIGHT:
                 tmp.eulerAngles = new Vector3(0, 0, 270);
                 break;
-            case MoveVec.LEFT:
+            case MoveDir.LEFT:
                 tmp.eulerAngles = new Vector3(0, 0, 90);
                 break;
         }
@@ -204,5 +200,4 @@ public abstract class EnemyBase : MonoBehaviour
         // 素材消滅
         em.EnemyEat(_pos);
     }
-
 }

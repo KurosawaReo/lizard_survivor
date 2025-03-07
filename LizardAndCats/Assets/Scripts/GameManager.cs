@@ -1,14 +1,16 @@
-using Const;
+/*
+   - GameManager.cs -
+   ゲーム全体の管理プログラム.
+   BoardManagerはここに吸収されたっぽい?
+*/
+using Gloval;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
-
     const int TMP_LEN = 12;
-
 
     //盤面データ.
     [Header("- 盤面情報系 -")]
@@ -18,6 +20,8 @@ public class GameManager : MonoBehaviour
     Board[,] board;
     [Tooltip("盤面のインスタンス")]
     Square[,] boardInst = new Square[TMP_LEN, TMP_LEN];
+    [Tooltip("盤面表示座標(左上)")]
+    public Vector2 boardTopLeft { get; private set; }
     [Tooltip("セルサイズ")]
     public float cellSize { get; private set; }
     [Tooltip("道の画像"), SerializeField]
@@ -25,11 +29,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("道の画像"), SerializeField]
     Sprite sprWall;
 
-
     [Header("- 敵管理系 -")]
     [Tooltip("敵の管理クラスのインスタンス"), SerializeField]
     EnemyManager em;
-
 
     [Header("- プレイヤー系 -")]
     [Tooltip("プレイヤーprefab"), SerializeField]
@@ -64,10 +66,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("現在の昼or夜を加算する変数")]
     int currentTimeZoneCount = 0;
 
-
-
-
-
     [Header("- UI系 -")]
     [Tooltip("太陽の画像"), SerializeField]
     Image imgSun;
@@ -89,33 +87,20 @@ public class GameManager : MonoBehaviour
     Image imgWin;
     [Tooltip("敗北画像"), SerializeField]
     Image imgLose;
-
-
-
-    const int LV1 = 4;
-    const int LV2 = 5;
-    const int LV3 = 6;
-
-
-
-
+    [Tooltip("経過ターン数の表示用テキスト"), SerializeField]
+    Text textResultElapsedTurn;
 
     void Start()
     {
-        //todo:エンドレスモード
-        stageId = StageId.END_LESS;
-
-
-
         lm = Instantiate(prefabPlayer).GetComponent<LizardManager>();
 
+        stageId = (StageId)PlayerPrefs.GetInt(Gl_Const.KEY_GAME_LEVEL, 0);
+        //stageId = StageId.END_LESS;
 
+        //初期化処理.
         BoardInit();
         BoardMake();
-
-
-        // UIの初期化
-        UIDisplay();
+        UIDisplay(); //UI.
 
         imgResultPanel.gameObject.SetActive(false);
 
@@ -124,17 +109,15 @@ public class GameManager : MonoBehaviour
         lm.transform.localScale = ls;
         lm.transform.position = GetCellWorldPosition(lm.GetPos());
 
-
         em.Init(stageId, this, lm);
-
-
     }
-
-
 
     private void BoardInit()
     {
-
+        //定数の簡略化.
+        const int LV1 = Gl_Const.STAGE_LV1_BOARD_SIZE;
+        const int LV2 = Gl_Const.STAGE_LV2_BOARD_SIZE;
+        const int LV3 = Gl_Const.STAGE_LV3_BOARD_SIZE;
 
         switch (stageId)
         {
@@ -152,6 +135,7 @@ public class GameManager : MonoBehaviour
                 boardInst = new Square[LV1, LV1];
                 completeDays = 72;
                 break;
+
             case StageId.STAGE_02:
                 lm.SetPos(new Vector2Int());
 
@@ -167,6 +151,7 @@ public class GameManager : MonoBehaviour
                 boardInst = new Square[LV2, LV2];
                 completeDays = 108;
                 break;
+
             case StageId.STAGE_03:
                 lm.SetPos(new Vector2Int());
                 board = new Board[LV3, LV3]
@@ -183,6 +168,7 @@ public class GameManager : MonoBehaviour
                 boardInst = new Square[LV3, LV3];
                 completeDays = 144;
                 break;
+
             case StageId.END_LESS:
                 lm.SetPos(new Vector2Int());
                 board = new Board[LV3, LV3]
@@ -202,22 +188,19 @@ public class GameManager : MonoBehaviour
 
     private void BoardMake()
     {
-        //ウィンドウの端の座標取得.
-        var (lb, rt) = Common.GetWorldWindowSize();
-        cellSize = (rt.y - lb.y) / board.GetLength(0);
-        var center = new Vector3((lb.x + rt.x) / 2, (lb.y + rt.y) / 2, 0);
-        var boardTopLeft = center + new Vector3(-cellSize * (board.GetLength(0) - 1) / 2, cellSize * (board.GetLength(0) - 1) / 2, 0);
-
+        //盤面表示座標の取得.
+        boardTopLeft = Gl_Func.GetBoardTopLeft(board.GetLength(0));
+        //セルサイズの取得.
+        cellSize = Gl_Func.GetBoardCellSize(board.GetLength(0));
 
         //盤面ループ.
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-
                 //背景の生成.
                 //var pos = new Vector3(lb.x + j + 0.5f, rt.y - i - 0.5f, 0);
-                var pos = boardTopLeft + new Vector3(j * cellSize, -i * cellSize, 0);
+                var pos = boardTopLeft + new Vector2(j * cellSize, -i * cellSize);
                 var obj = Instantiate(squarePrfb, pos, Quaternion.identity);
 
                 var ls = obj.transform.localScale;
@@ -240,7 +223,6 @@ public class GameManager : MonoBehaviour
 
                 boardInst[i, j] = obj.GetComponent<Square>();
                 boardInst[i, j].Init();
-
             }
         }
     }
@@ -251,24 +233,29 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
-
-                print("タイトルに戻る");
+                //print("タイトルに戻る");
                 BackTitle();
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
-
-                print("同じ難易度でリプレイ");
+                //print("同じ難易度でリプレイ");
                 Replay();
             }
         }
     }
 
-    public Board[,] GetBoard()
+    public Board GetBoard(Vector2Int _pos)
+    {
+        return board[_pos.y, _pos.x];
+    }
+    public Board[,] GetBoardAry()
     {
         return board;
     }
-
+    public void SetBoard(Vector2Int _pos, Board _val)
+    {
+        board[_pos.y, _pos.x] = _val;
+    }
     public void SetBoardSquare(Vector2Int _pos, Board _val)
     {
         board[_pos.y, _pos.x] = _val;
@@ -286,7 +273,6 @@ public class GameManager : MonoBehaviour
         return board[_pos.y, _pos.x];
     }
 
-
     public Vector3 GetCellWorldPosition(Vector2Int _pos)
     {
         if (_pos.x < 0 || _pos.x >= board.GetLength(1) || _pos.y < 0 || _pos.y >= board.GetLength(0))
@@ -296,7 +282,7 @@ public class GameManager : MonoBehaviour
         }
 
         // 画面中央を基準に盤面の左上座標を計算
-        var (lb, rt) = Common.GetWorldWindowSize();
+        var (lb, rt) = Gl_Func.GetWorldWindowSize();
         var center = new Vector3((lb.x + rt.x) / 2, (lb.y + rt.y) / 2, 0);
         var boardTopLeft = center + new Vector3(-cellSize * (board.GetLength(0) - 1) / 2, cellSize * (board.GetLength(0) - 1) / 2, 0);
 
@@ -309,16 +295,24 @@ public class GameManager : MonoBehaviour
         return isPlayerWait;
     }
 
-
+    /// <summary>
+    /// プレイヤーターンが終了した時に呼び出される.
+    /// </summary>
     public void PlayerTurnEnd()
     {
-        isPlayerWait = false;
+        isPlayerWait = false; //待機終了.
+
         em.EnemiesMove();
+        if (!isGame)
+        {
+            return;
+        }
         lm.AddTailGauge();
 
-        // 材料と食べ物を生成する
+        //確率抽選.
         var rand = Random.Range(0, 100);
-        if (rand < 3)
+        //一定確率で食べ物か素材を生成する.
+        if (rand < Gl_Const.RAND_GENERATE_FOOD)
         {
             // 食べ物を生成する
             var list = GetNoneSquares();
@@ -327,19 +321,15 @@ public class GameManager : MonoBehaviour
             board[pos.y, pos.x].SetObject(DropObj.FOOD, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.FOOD);
         }
-        else if (rand < 6)
+        else if (rand < Gl_Const.RAND_GENERATE_MATERIAL)
         {
             // 材料を生成する
-
             var list = GetNoneSquares();
             rand = Random.Range(0, list.Count);
             var pos = list[rand];
             board[pos.y, pos.x].SetObject(DropObj.MATERIAL, "", 0, 0, 0);
             boardInst[pos.y, pos.x].SetObj(DropObj.MATERIAL);
         }
-
-
-
 
         currentElapsedTurns++;
         currentTimeZoneCount++;
@@ -362,22 +352,19 @@ public class GameManager : MonoBehaviour
 
         UIDisplay();
 
-
-
         if (currentElapsedTurns >= completeDays)
         {
             ShowResult(true);
             return;
         }
 
-
-        isPlayerWait = true;
+        isPlayerWait = true; //待機再開.
     }
-
 
     public List<Vector2Int> GetNoneSquares()
     {
         var ret = new List<Vector2Int>();
+
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
@@ -397,54 +384,52 @@ public class GameManager : MonoBehaviour
         return ret;
     }
 
-
     public Vector2Int GetPlayerPos()
     {
         return lm.GetPos();
     }
-
 
     public void ShowResult(bool _isWin)
     {
         isGame = false;
         // リザルト表示
         imgResultPanel.gameObject.SetActive(true);
+        textResultElapsedTurn.text = "経過ターン:" + currentElapsedTurns;
         if (_isWin)
         {
             textResult.text = "勝利";
             imgWin.gameObject.SetActive(true);
-            //imgLose.gameObject.SetActive(false);
+            imgLose.gameObject.SetActive(false);
         }
         else
         {
             textResult.text = "敗北";
             imgWin.gameObject.SetActive(false);
-            //imgLose.gameObject.SetActive(true);
+            imgLose.gameObject.SetActive(true);
         }
     }
 
-
     public void Replay()
     {
-        print("リプレイ");
-        Common.LoadScene("EnemyMove");
+        //print("リプレイ");
+        Gl_Func.LoadScene("GameScene");
     }
 
     public void BackTitle()
     {
-        Common.LoadScene("TitleScene");
-        print("止める");
+        //print("止める");
+        Gl_Func.LoadScene("TitleScene");
     }
 
     public void ConsumeMaterial()
     {
         int cnt = 2;
 
-        for(int i = listInventory.Count - 1; i >= 0; i--)
+        for (int i = listInventory.Count - 1; i >= 0; i--)
         {
             if (listInventory[i].transform.GetChild(0).gameObject.activeSelf)
             {
-                if(cnt > 0)
+                if (cnt > 0)
                 {
                     cnt--;
                     listInventory[i].transform.GetChild(0).gameObject.SetActive(false);
@@ -455,7 +440,7 @@ public class GameManager : MonoBehaviour
 
     public void GetMaterial()
     {
-        for(int i = 0; i < listInventory.Count - 1; i++)
+        for (int i = 0; i < listInventory.Count; i++)
         {
             if (!listInventory[i].transform.GetChild(0).gameObject.activeSelf)
             {
@@ -465,8 +450,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    void UIDisplay()
+    /// <summary>
+    /// UIの表示と更新.
+    /// </summary>
+    public void UIDisplay()
     {
         imgTailGauge.fillAmount = lm.GetNormalizedTailGaugeAMount();
         if (lm.IsTail())
@@ -478,12 +465,9 @@ public class GameManager : MonoBehaviour
             imgTailIcon.color = Color.gray;
         }
 
-
         var tmp = imgRotate.transform.rotation;
-        tmp.eulerAngles = new Vector3(0, 0, currentElapsedTurns * -(360f / (LENGTH_DAYTIME + LENGTH_NIGHT))) ;
+        tmp.eulerAngles = new Vector3(0, 0, currentElapsedTurns * -(360f / (LENGTH_DAYTIME + LENGTH_NIGHT)));
         imgRotate.transform.rotation = tmp;
-
-
 
         textElapsedTurns.text = "経過ターン:" + currentElapsedTurns;
         textRemainingTurns.text = "終了まで後:" + (completeDays - currentElapsedTurns);
