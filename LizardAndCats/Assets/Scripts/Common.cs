@@ -104,7 +104,7 @@ namespace Gloval
         public static (Vector3 leftBottom, Vector3 rightTop) GetWorldWindowSize()
         {
             Vector3 leftBottom = Camera.main.ScreenToWorldPoint(Vector3.zero);
-            Vector3 rightTop = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+            Vector3 rightTop   = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
 
             return (leftBottom, rightTop);
         }
@@ -135,20 +135,6 @@ namespace Gloval
         }
 
         /// <summary>
-        /// boardのセル表示サイズを取得.
-        /// </summary>
-        /// <param name="_boardLen">boardの列数.</param>
-        /// <returns>セルのサイズ.</returns>
-        public static float GetBoardCellSize(int _boardLen)
-        {
-            //ウィンドウの端の座標取得.
-            var (lb, rt) = GetWorldWindowSize();
-
-            //セルサイズを計算して返す.
-            return (rt.y - lb.y) / _boardLen;
-        }
-
-        /// <summary>
         /// boardを表示する左上座標の取得.
         /// </summary>
         /// <param name="_wid">画面の横幅.</param>
@@ -165,7 +151,21 @@ namespace Gloval
             //座標を計算して返す.
             var x = -GetBoardCellSize(_boardLen) * (_boardLen-1) / 2;
             var y = +GetBoardCellSize(_boardLen) * (_boardLen-1) / 2;
-            return  center + new Vector2(x, y);
+            return center + new Vector2(x, y);
+        }
+
+        /// <summary>
+        /// boardのセル表示サイズを取得.
+        /// </summary>
+        /// <param name="_boardLen">boardの列数.</param>
+        /// <returns>セルのサイズ.</returns>
+        public static float GetBoardCellSize(int _boardLen)
+        {
+            //ウィンドウの端の座標取得.
+            var (lb, rt) = GetWorldWindowSize();
+
+            //セルサイズを計算して返す.
+            return (rt.y - lb.y) / _boardLen;
         }
 
         /// <summary>
